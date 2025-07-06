@@ -102,8 +102,24 @@ test:production() {
 # Code quality
 lint() {
     log_info "Running linters..."
-    cd services/frontend/webapp && npm run lint
-    cd ../../../services/backend/functions && npm run lint
+    
+    # Lint frontend if it exists
+    if [ -d "services/frontend/webapp" ] && [ -f "services/frontend/webapp/package.json" ]; then
+        if grep -q '"lint"' services/frontend/webapp/package.json; then
+            cd services/frontend/webapp && npm run lint
+            cd ../../..
+        else
+            log_warn "Frontend lint script not found, skipping"
+        fi
+    else
+        log_warn "Frontend not implemented yet (PU-12), skipping frontend linting"
+    fi
+    
+    # Lint backend functions
+    if [ -d "services/backend/functions" ] && [ -f "services/backend/functions/package.json" ]; then
+        cd services/backend/functions && npm run lint
+        cd ../../..
+    fi
 }
 
 format() {
@@ -114,8 +130,32 @@ format() {
 
 type-check() {
     log_info "Checking TypeScript types..."
-    cd services/frontend/webapp && npm run type-check
-    cd ../../../services/backend/functions && npm run type-check
+    
+    # Check frontend if it exists
+    if [ -d "services/frontend/webapp" ] && [ -f "services/frontend/webapp/package.json" ]; then
+        if grep -q '"type-check"' services/frontend/webapp/package.json; then
+            cd services/frontend/webapp && npm run type-check
+            cd ../../..
+        else
+            log_warn "Frontend type-check script not found, skipping"
+        fi
+    else
+        log_warn "Frontend not implemented yet (PU-12), skipping frontend type-check"
+    fi
+    
+    # Check backend functions (use build script for TypeScript compilation)
+    if [ -d "services/backend/functions" ] && [ -f "services/backend/functions/package.json" ]; then
+        if grep -q '"type-check"' services/backend/functions/package.json; then
+            cd services/backend/functions && npm run type-check
+            cd ../../..
+        elif grep -q '"build"' services/backend/functions/package.json; then
+            log_info "Using build script for TypeScript type checking..."
+            cd services/backend/functions && npm run build > /dev/null 2>&1
+            cd ../../..
+        else
+            log_warn "No TypeScript checking available for backend functions"
+        fi
+    fi
 }
 
 # Firebase commands
