@@ -78,9 +78,10 @@ After running `source activate`:
    - Include 🤖 Generated with Claude Code footer
    - Push to current feature branch
 
-3. **Merge to Sprint Branch**
-   - Merge feature branch to sprint branch
-   - Clean up merged feature branch
+3. **Merge to Sprint Branch** (MANDATORY)
+   - Switch to current sprint branch (e.g., `sprint/sprint-01`)
+   - Merge feature branch to sprint branch with `--no-ff` flag
+   - Clean up merged feature branch after successful merge
 
 4. **Update Jira Ticket**
    - Add detailed completion comment with what was accomplished
@@ -90,9 +91,10 @@ After running `source activate`:
    - Move current ticket from In Progress → Done
    - Move next ticket from Pending → In Progress
 
-6. **Create New Branch**
-   - Create new feature branch for next ticket from sprint branch
+6. **Create New Branch** (FROM SPRINT BRANCH)
+   - CRITICAL: Create new feature branch FROM current sprint branch, NOT main
    - Use format: `feature/PU-X-ticket-name`
+   - Always branch from `sprint/sprint-XX` to maintain sprint lineage
 
 7. **Update Roadmap**
    - Update progress percentages
@@ -179,13 +181,62 @@ After running `source activate`:
 - Implement rate limiting on Cloud Functions
 - Follow OWASP best practices
 
-## Branch Strategy (from Hermes)
+## Branch Strategy (STRICT ENFORCEMENT)
 
-- `main` - Production branch
-- `develop` - Integration branch
-- `feature/*` - Feature branches
-- `fix/*` - Bug fix branches
-- `release/*` - Release preparation
+**CRITICAL**: Follow this branch strategy exactly. No exceptions.
+
+### Branch Types
+- `main` - Production-ready code, deployed to production
+- `sprint/sprint-XX` - Sprint integration branches (e.g., `sprint/sprint-01`)
+- `feature/PU-X-description` - Feature branches for individual tickets
+- `fix/PU-X-description` - Bug fix branches
+- `hotfix/description` - Emergency production fixes
+
+### Workflow (MANDATORY)
+```bash
+# 1. Create feature branch FROM sprint branch
+git checkout sprint/sprint-01
+git pull origin sprint/sprint-01
+git checkout -b feature/PU-X-description
+
+# 2. Work on feature, commit changes
+# ... development work ...
+
+# 3. MANDATORY: Merge to sprint branch (not main!)
+git checkout sprint/sprint-01
+git merge --no-ff feature/PU-X-description
+git push origin sprint/sprint-01
+
+# 4. Clean up feature branch
+git branch -d feature/PU-X-description
+git push origin --delete feature/PU-X-description
+
+# 5. Create next feature branch FROM updated sprint branch
+git checkout -b feature/PU-Y-next-ticket
+```
+
+### Sprint Lifecycle
+- **Sprint Start**: Create `sprint/sprint-XX` from `main`
+- **During Sprint**: All features merge to sprint branch
+- **Sprint End**: Merge `sprint/sprint-XX` to `main`, tag release
+- **Production**: Deploy from `main` branch only
+
+### Branch Protection Rules
+- `main`: Requires PR, requires status checks, no direct pushes
+- `sprint/sprint-XX`: Requires feature branch merges, no direct commits
+- Feature branches: Must pass all tests before merge
+
+### Emergency Hotfixes
+```bash
+# Hotfix workflow (production emergencies only)
+git checkout main
+git checkout -b hotfix/critical-fix
+# ... fix ...
+git checkout main
+git merge --no-ff hotfix/critical-fix
+git checkout sprint/sprint-01
+git merge --no-ff hotfix/critical-fix  # Also merge to current sprint
+```
 
 ## Testing Requirements
 
