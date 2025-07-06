@@ -186,6 +186,7 @@ After running `source activate`:
 **CRITICAL**: Follow this branch strategy exactly. No exceptions.
 
 ### Branch Types
+
 - `main` - Production-ready code, deployed to production
 - `sprint/sprint-XX` - Sprint integration branches (e.g., `sprint/sprint-01`)
 - `feature/PU-X-description` - Feature branches for individual tickets
@@ -193,6 +194,7 @@ After running `source activate`:
 - `hotfix/description` - Emergency production fixes
 
 ### Workflow (MANDATORY)
+
 ```bash
 # 1. Create feature branch FROM sprint branch
 git checkout sprint/sprint-01
@@ -216,17 +218,20 @@ git checkout -b feature/PU-Y-next-ticket
 ```
 
 ### Sprint Lifecycle
+
 - **Sprint Start**: Create `sprint/sprint-XX` from `main`
 - **During Sprint**: All features merge to sprint branch
 - **Sprint End**: Merge `sprint/sprint-XX` to `main`, tag release
 - **Production**: Deploy from `main` branch only
 
 ### Branch Protection Rules
+
 - `main`: Requires PR, requires status checks, no direct pushes
 - `sprint/sprint-XX`: Requires feature branch merges, no direct commits
 - Feature branches: Must pass all tests before merge
 
 ### Emergency Hotfixes
+
 ```bash
 # Hotfix workflow (production emergencies only)
 git checkout main
