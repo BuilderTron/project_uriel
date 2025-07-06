@@ -25,17 +25,12 @@ ENV NODE_ENV=development
 # Copy Firebase configuration files
 COPY firebase.json .firebaserc ./
 
-# Create required directories and backend structure
+# Create required directories
 RUN mkdir -p .firebase/data backend/functions backend/firestore backend/storage config
 
-# Create placeholder files for Firebase configuration
-RUN echo 'rules_version = "2"; service cloud.firestore { match /databases/{database}/documents { match /{document=**} { allow read, write: if true; } } }' > ./backend/firestore/firestore.rules && \
-    echo '{"indexes": [], "fieldOverrides": []}' > ./backend/firestore/firestore.indexes.json && \
-    echo 'rules_version = "2"; service firebase.storage { match /b/{bucket}/o { match /{allPaths=**} { allow read, write: if true; } } }' > ./backend/storage/storage.rules
-
-# Create placeholder package.json for functions
-RUN echo '{"name": "functions", "version": "1.0.0", "private": true, "engines": {"node": "20"}, "main": "index.js", "dependencies": {}, "devDependencies": {}}' > ./backend/functions/package.json && \
-    echo 'exports.api = () => console.log("Firebase Functions placeholder");' > ./backend/functions/index.js
+# Backend files will be mounted as volumes at runtime
+# Create directories for mounted files
+RUN mkdir -p backend/functions backend/firestore backend/storage
 
 # Create firebase data directory
 RUN mkdir -p .firebase/data

@@ -16,6 +16,9 @@ services:
     volumes:
       - firebase-data:/app/.firebase
       - firebase-config:/app/config
+      - ../../services/backend/firestore:/app/backend/firestore:ro
+      - ../../services/backend/storage:/app/backend/storage:ro
+      - ../../services/backend/functions:/app/backend/functions:ro
     environment:
       - FIREBASE_PROJECT=${FIREBASE_PROJECT_ID:-demo-project-uriel-local}
       - GOOGLE_APPLICATION_CREDENTIALS=/app/service-account.json

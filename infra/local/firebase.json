@@ -2,7 +2,9 @@
   "emulators": {
     "auth": {
       "port": 9099,
-      "host": "0.0.0.0"
+      "host": "0.0.0.0",
+      "import": "./data/auth_export",
+      "export": "./data/auth_export"
     },
     "functions": {
       "port": 5001,
@@ -10,11 +12,15 @@
     },
     "firestore": {
       "port": 8080,
-      "host": "0.0.0.0"
+      "host": "0.0.0.0",
+      "import": "./data/firestore_export",
+      "export": "./data/firestore_export"
     },
     "storage": {
       "port": 9199,
-      "host": "0.0.0.0"
+      "host": "0.0.0.0",
+      "import": "./data/storage_export",
+      "export": "./data/storage_export"
     },
     "eventarc": {
       "port": 9299,

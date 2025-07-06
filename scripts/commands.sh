@@ -182,7 +182,8 @@ clean:docker() {
 
 nuke() {
     log_error "This will remove ALL Project Uriel build artifacts, Docker volumes, and node_modules!"
-    read -p "Are you sure? Type 'nuke everything' to confirm: " confirmation
+    echo -n "Are you sure? Type 'nuke everything' to confirm: "
+    read confirmation
     if [[ "$confirmation" == "nuke everything" ]]; then
         clean
         clean:docker

@@ -1,0 +1,153 @@
+{
+  "projects": [
+    {
+      "id": "project-hermes",
+      "title": "Project Hermes",
+      "description": "A comprehensive DevOps and Infrastructure Management platform built with modern cloud-native technologies.",
+      "excerpt": "Advanced DevOps platform featuring automated CI/CD pipelines, infrastructure as code, and real-time monitoring.",
+      "technologies": ["React", "Node.js", "Docker", "Kubernetes", "AWS", "TypeScript"],
+      "category": "Full-Stack",
+      "status": "completed",
+      "featured": true,
+      "startDate": "2024-01-15",
+      "completedAt": "2024-06-30",
+      "githubUrl": "https://github.com/jlopez/project-hermes",
+      "liveUrl": "https://hermes.example.com",
+      "images": [
+        "/portfolio/projects/hermes-dashboard.jpg",
+        "/portfolio/projects/hermes-pipeline.jpg"
+      ],
+      "challenges": "Implementing real-time deployment monitoring and managing complex Kubernetes orchestration.",
+      "solutions": "Built custom monitoring dashboard with WebSocket connections and implemented GitOps workflows.",
+      "createdAt": "2024-01-15T00:00:00Z",
+      "updatedAt": "2024-06-30T00:00:00Z"
+    },
+    {
+      "id": "portfolio-v3",
+      "title": "Portfolio Website v3",
+      "description": "Modern portfolio website built with React, Firebase, and Tailwind CSS featuring a blog, project showcase, and contact system.",
+      "excerpt": "Personal portfolio with advanced features including CMS capabilities, analytics tracking, and responsive design.",
+      "technologies": ["React", "Firebase", "Tailwind CSS", "TypeScript", "Vite"],
+      "category": "Frontend",
+      "status": "in-progress",
+      "featured": true,
+      "startDate": "2024-07-01",
+      "completedAt": null,
+      "githubUrl": "https://github.com/jlopez/portfolio-v3",
+      "liveUrl": null,
+      "images": [
+        "/portfolio/projects/portfolio-home.jpg"
+      ],
+      "challenges": "Creating a scalable content management system and implementing real-time analytics.",
+      "solutions": "Leveraging Firebase's real-time capabilities and building custom React hooks for state management.",
+      "createdAt": "2024-07-01T00:00:00Z",
+      "updatedAt": "2024-07-06T00:00:00Z"
+    }
+  ],
+  "experience": [
+    {
+      "id": "senior-fullstack-dev",
+      "title": "Senior Full-Stack Developer",
+      "company": "Tech Innovation Labs",
+      "location": "San Francisco, CA",
+      "type": "full-time",
+      "current": true,
+      "startDate": "2023-03-01",
+      "endDate": null,
+      "description": "Lead development of cloud-native applications and mentor junior developers in modern web technologies.",
+      "achievements": [
+        "Architected and implemented microservices platform serving 1M+ users",
+        "Led team of 5 developers in agile development practices",
+        "Reduced deployment time by 70% through CI/CD optimization",
+        "Mentored 8 junior developers in React and Node.js best practices"
+      ],
+      "technologies": ["React", "Node.js", "AWS", "Docker", "TypeScript", "GraphQL"],
+      "createdAt": "2023-03-01T00:00:00Z",
+      "updatedAt": "2024-07-06T00:00:00Z"
+    },
+    {
+      "id": "fullstack-developer",
+      "title": "Full-Stack Developer",
+      "company": "Digital Solutions Inc",
+      "location": "Austin, TX",
+      "type": "full-time",
+      "current": false,
+      "startDate": "2021-06-01",
+      "endDate": "2023-02-28",
+      "description": "Developed and maintained web applications using modern JavaScript frameworks and cloud technologies.",
+      "achievements": [
+        "Built responsive web applications for 10+ clients",
+        "Implemented real-time features using WebSocket technology",
+        "Optimized database queries resulting in 40% performance improvement",
+        "Collaborated with design team to implement pixel-perfect UIs"
+      ],
+      "technologies": ["Vue.js", "Express.js", "MongoDB", "Firebase", "Sass"],
+      "createdAt": "2021-06-01T00:00:00Z",
+      "updatedAt": "2023-02-28T00:00:00Z"
+    }
+  ],
+  "blog": [
+    {
+      "id": "modern-react-patterns",
+      "title": "Modern React Patterns for 2024",
+      "slug": "modern-react-patterns-2024",
+      "excerpt": "Exploring the latest React patterns including Server Components, Suspense, and custom hooks for better developer experience.",
+      "content": "# Modern React Patterns for 2024\n\nReact continues to evolve, and with it, the patterns we use to build applications...",
+      "category": "React",
+      "tags": ["React", "JavaScript", "Patterns", "Frontend"],
+      "published": true,
+      "featured": true,
+      "readTime": 8,
+      "publishedAt": "2024-06-15T00:00:00Z",
+      "createdAt": "2024-06-10T00:00:00Z",
+      "updatedAt": "2024-06-15T00:00:00Z",
+      "viewCount": 1250,
+      "likeCount": 89,
+      "commentCount": 12
+    },
+    {
+      "id": "firebase-security-best-practices",
+      "title": "Firebase Security Rules: Best Practices and Common Pitfalls",
+      "slug": "firebase-security-best-practices",
+      "excerpt": "A comprehensive guide to writing secure and efficient Firebase security rules with real-world examples.",
+      "content": "# Firebase Security Rules: Best Practices\n\nSecurity is paramount when building applications with Firebase...",
+      "category": "Firebase",
+      "tags": ["Firebase", "Security", "Backend", "Best Practices"],
+      "published": true,
+      "featured": false,
+      "readTime": 12,
+      "publishedAt": "2024-05-20T00:00:00Z",
+      "createdAt": "2024-05-15T00:00:00Z",
+      "updatedAt": "2024-05-20T00:00:00Z",
+      "viewCount": 892,
+      "likeCount": 67,
+      "commentCount": 8
+    }
+  ],
+  "config": [
+    {
+      "id": "site-settings",
+      "title": "Jose J Lopez",
+      "subtitle": "Senior Full-Stack Developer",
+      "description": "Passionate full-stack developer specializing in modern web technologies and cloud solutions.",
+      "email": "hello@joselopez.dev",
+      "social": {
+        "github": "https://github.com/jlopez",
+        "linkedin": "https://linkedin.com/in/joselopez",
+        "twitter": "https://twitter.com/joselopez"
+      },
+      "skills": [
+        "React",
+        "Node.js",
+        "TypeScript",
+        "Firebase",
+        "AWS",
+        "Docker",
+        "Kubernetes"
+      ],
+      "resumeUrl": "/documents/cv/jose-lopez-resume.pdf",
+      "createdAt": "2024-07-01T00:00:00Z",
+      "updatedAt": "2024-07-06T00:00:00Z"
+    }
+  ]
+}
