@@ -536,6 +536,74 @@ export const apiEndpoint = functions.https.onRequest(
 ### Issue: CORS Errors
 **Solution**: Configure CORS properly in Express middleware
 
+## Git Hooks and Quality Assurance
+
+### Firebase-Specific Git Hooks (PU-6)
+
+Project Uriel implements comprehensive git hooks for Firebase validation:
+
+#### Pre-Push Hook Features
+```bash
+# Located at: .git/hooks/pre-push
+# Enhanced Firebase validation including:
+
+1. Branch naming validation (feature/PU-XXX-description)
+2. Firebase configuration validation (firebase.json, .firebaserc)
+3. Firestore security rules testing with emulators
+4. Cloud Functions TypeScript compilation
+5. Cloud Functions ESLint validation
+6. Performance warnings for function timeouts/memory
+```
+
+#### Commit Message Hook
+```bash
+# Located at: .git/hooks/commit-msg
+# Enforces conventional commits with Firebase scopes:
+
+feat(functions): add contact form handler
+fix(rules): correct user permission validation
+docs(deploy): update deployment guide
+chore(deps): update Firebase SDK to v10
+```
+
+#### Firebase Validation Commands
+```bash
+# Available in scripts/commands.sh:
+
+firebase:validate-all      # Run complete Firebase validation
+firebase:validate-rules    # Test Firestore/Storage security rules
+firebase:lint-functions    # ESLint + TypeScript for Cloud Functions
+firebase:test-functions    # Run Cloud Functions unit tests
+firebase:check-config      # Validate Firebase configuration files
+```
+
+### GitHub Actions CI Pipeline
+
+Automated validation pipeline with Firebase-specific checks:
+
+```yaml
+# .github/workflows/ci.yml includes:
+
+1. Conventional commit validation
+2. Firebase configuration syntax checks
+3. Security rules testing with emulators
+4. Cloud Functions compilation and linting
+5. Integration tests with Docker
+6. Security audits and branch naming validation
+```
+
+### Quality Gates
+
+Before code reaches production, it must pass:
+
+- ✅ Branch naming follows PU-XXX convention
+- ✅ Commits follow conventional format
+- ✅ Firebase configuration is valid JSON
+- ✅ Security rules pass emulator tests
+- ✅ Cloud Functions compile and pass linting
+- ✅ Integration tests pass with Docker services
+- ✅ No high-severity security vulnerabilities
+
 ## References
 
 - Always check context7 for latest Firebase patterns
@@ -543,3 +611,4 @@ export const apiEndpoint = functions.https.onRequest(
 - [Cloud Functions Best Practices](https://cloud.google.com/functions/docs/bestpractices)
 - [Firestore Data Modeling](https://firebase.google.com/docs/firestore/data-model)
 - [Firebase Security Rules](https://firebase.google.com/docs/rules)
+- [Conventional Commits](https://www.conventionalcommits.org/) - Commit message standards

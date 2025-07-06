@@ -34,38 +34,43 @@ run_suite() {
 # Change to project root
 cd "$(dirname "$0")/../.."
 
-# 1. Deployment Script Tests
+# 1. Git Hooks Tests
+if [ -f "tests/scripts/test-git-hooks.sh" ]; then
+    run_suite "Git Hooks" "./tests/scripts/test-git-hooks.sh"
+fi
+
+# 2. Deployment Script Tests
 if [ -f "tests/deployment/test-deploy-scripts.sh" ]; then
     run_suite "Deployment Scripts" "./tests/deployment/test-deploy-scripts.sh"
 fi
 
-# 2. Frontend Tests
+# 3. Frontend Tests
 if [ -d "services/frontend/webapp" ] && [ -f "services/frontend/webapp/package.json" ]; then
     if grep -q '"test"' services/frontend/webapp/package.json; then
         run_suite "Frontend Tests" "cd services/frontend/webapp && npm test -- --run"
     fi
 fi
 
-# 3. Backend Tests
+# 4. Backend Tests
 if [ -d "services/backend/functions" ] && [ -f "services/backend/functions/package.json" ]; then
     if grep -q '"test"' services/backend/functions/package.json; then
         run_suite "Backend Tests" "cd services/backend/functions && npm test -- --passWithNoTests"
     fi
 fi
 
-# 4. Firebase Rules Tests
+# 5. Firebase Rules Tests
 if [ -f "services/backend/firestore/firestore.rules" ]; then
     echo -e "\n${YELLOW}Firebase Rules Tests${NC}"
     echo -e "${YELLOW}⚠ Skipped (requires emulator setup)${NC}"
 fi
 
-# 5. Integration Tests
+# 6. Integration Tests
 if [ -d "tests/integration" ]; then
     echo -e "\n${YELLOW}Integration Tests${NC}"
     echo -e "${YELLOW}⚠ Not implemented yet${NC}"
 fi
 
-# 6. E2E Tests
+# 7. E2E Tests
 if [ -d "tests/e2e" ]; then
     echo -e "\n${YELLOW}E2E Tests${NC}"
     echo -e "${YELLOW}⚠ Not implemented yet${NC}"
