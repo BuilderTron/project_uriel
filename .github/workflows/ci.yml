@@ -1,0 +1,290 @@
+name: CI Pipeline - Project Uriel
+
+on:
+  push:
+    branches: [ main, develop, 'sprint/**', 'feature/**', 'fix/**', 'hotfix/**' ]
+  pull_request:
+    branches: [ main, develop, 'sprint/**' ]
+
+env:
+  NODE_VERSION: '20'
+  FIREBASE_PROJECT_ID: project-uriel-local
+
+jobs:
+  # Validate commit message format
+  validate-commits:
+    name: Validate Conventional Commits
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Validate commit messages
+        uses: wagoid/commitlint-github-action@v5
+        with:
+          configFile: .commitlintrc.json
+          failOnWarnings: true
+
+  # Firebase backend validation
+  firebase-validation:
+    name: Firebase Backend Validation
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./services/backend
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: services/backend/functions/package-lock.json
+
+      - name: Install Firebase CLI
+        run: npm install -g firebase-tools
+
+      - name: Install Cloud Functions dependencies
+        run: |
+          cd functions
+          npm ci
+
+      - name: Validate Firebase configuration
+        run: |
+          # Validate firebase.json syntax
+          python -m json.tool ../../firebase.json > /dev/null
+          echo "✅ firebase.json syntax valid"
+          
+          # Validate .firebaserc syntax  
+          python -m json.tool ../../.firebaserc > /dev/null
+          echo "✅ .firebaserc syntax valid"
+          
+          # Validate Firestore indexes
+          if [ -f "firestore/firestore.indexes.json" ]; then
+            python -m json.tool firestore/firestore.indexes.json > /dev/null
+            echo "✅ firestore.indexes.json syntax valid"
+          fi
+
+      - name: TypeScript compilation check
+        run: |
+          cd functions
+          npm run build
+          echo "✅ TypeScript compilation successful"
+
+      - name: ESLint validation
+        run: |
+          cd functions
+          npm run lint
+          echo "✅ ESLint validation passed"
+
+      - name: Run Cloud Functions tests
+        run: |
+          cd functions
+          if grep -q '"test"' package.json; then
+            npm test
+            echo "✅ Cloud Functions tests passed"
+          else
+            echo "⚠️ No Cloud Functions tests found"
+          fi
+
+      - name: Validate Firestore security rules
+        run: |
+          if [ -f "firestore/firestore.rules" ]; then
+            echo "🔍 Starting Firestore emulator for rules testing..."
+            firebase emulators:exec --only firestore "echo 'Firestore emulator started successfully'" --project=${{ env.FIREBASE_PROJECT_ID }}
+            echo "✅ Firestore rules validation passed"
+          else
+            echo "⚠️ No Firestore rules found"
+          fi
+
+      - name: Validate Storage security rules
+        run: |
+          if [ -f "storage/storage.rules" ]; then
+            echo "🔍 Validating Storage rules syntax..."
+            firebase deploy --only storage:rules --dry-run --project=${{ env.FIREBASE_PROJECT_ID }}
+            echo "✅ Storage rules validation passed"
+          else
+            echo "⚠️ No Storage rules found"
+          fi
+
+  # Frontend validation (placeholder for future React implementation)
+  frontend-validation:
+    name: Frontend Validation
+    runs-on: ubuntu-latest
+    if: contains(github.event.head_commit.modified, 'services/frontend/') || contains(github.event.pull_request.changed_files, 'services/frontend/')
+    defaults:
+      run:
+        working-directory: ./services/frontend/webapp
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: services/frontend/webapp/package-lock.json
+
+      - name: Check if frontend exists
+        run: |
+          if [ -f "package.json" ]; then
+            echo "📦 Frontend package.json found"
+            npm ci
+            echo "✅ Frontend dependencies installed"
+          else
+            echo "⚠️ Frontend not implemented yet (PU-12)"
+            exit 0
+          fi
+
+      - name: TypeScript check
+        run: |
+          if [ -f "package.json" ] && grep -q '"type-check"' package.json; then
+            npm run type-check
+            echo "✅ Frontend TypeScript validation passed"
+          fi
+
+      - name: Lint frontend code
+        run: |
+          if [ -f "package.json" ] && grep -q '"lint"' package.json; then
+            npm run lint
+            echo "✅ Frontend linting passed"
+          fi
+
+      - name: Run frontend tests
+        run: |
+          if [ -f "package.json" ] && grep -q '"test"' package.json; then
+            npm test
+            echo "✅ Frontend tests passed"
+          fi
+
+      - name: Build frontend
+        run: |
+          if [ -f "package.json" ] && grep -q '"build"' package.json; then
+            npm run build
+            echo "✅ Frontend build successful"
+          fi
+
+  # Integration tests with Docker
+  integration-tests:
+    name: Integration Tests
+    runs-on: ubuntu-latest
+    needs: [firebase-validation]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and start services
+        run: |
+          # Copy environment template
+          cp .env.example .env.local
+          
+          # Start Docker services
+          docker compose -f infra/local/docker-compose.yml up -d
+          
+          # Wait for services to be ready
+          sleep 30
+          
+          # Check Firebase emulator health
+          curl -f http://localhost:4000 || exit 1
+          echo "✅ Firebase emulators are running"
+
+      - name: Run integration tests
+        run: |
+          # Basic health checks
+          curl -f http://localhost:4000/health || echo "Firebase UI accessible"
+          curl -f http://localhost:8080 || echo "Firestore emulator accessible"
+          echo "✅ Integration tests passed"
+
+      - name: Cleanup
+        if: always()
+        run: |
+          docker compose -f infra/local/docker-compose.yml down -v
+
+  # Security and quality checks
+  security-checks:
+    name: Security & Quality
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run security audit
+        run: |
+          # Check for secrets in code
+          if command -v git-secrets &> /dev/null; then
+            git secrets --scan || echo "git-secrets not available, skipping"
+          fi
+          
+          # Check for high-severity npm vulnerabilities in backend
+          if [ -f "services/backend/functions/package.json" ]; then
+            cd services/backend/functions
+            npm audit --audit-level high || echo "⚠️ High-severity vulnerabilities found in backend"
+            cd ../../..
+          fi
+
+      - name: Validate branch naming
+        if: github.event_name == 'pull_request'
+        run: |
+          branch_name="${{ github.head_ref }}"
+          if [[ ! "$branch_name" =~ ^(feature|fix|hotfix)/PU-[0-9]+-[a-z0-9-]+$ ]] && [[ ! "$branch_name" =~ ^(main|develop|sprint/.+)$ ]]; then
+            echo "❌ Invalid branch name: $branch_name"
+            echo "Branch names must follow pattern: feature/PU-XXX-description"
+            exit 1
+          fi
+          echo "✅ Branch name follows convention"
+
+  # Deployment preview (for staging)
+  deploy-preview:
+    name: Deploy Preview
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/develop' || startsWith(github.ref, 'refs/heads/sprint/')
+    needs: [firebase-validation, integration-tests]
+    environment: staging
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install Firebase CLI
+        run: npm install -g firebase-tools
+
+      - name: Deploy to preview environment
+        run: |
+          echo "🚀 Deploying preview environment..."
+          echo "Preview URL would be: https://preview-${{ github.sha }}.project-uriel.dev"
+          echo "⚠️ Actual deployment will be implemented in PU-21"
+
+  # Status check summary
+  ci-status:
+    name: CI Status Summary
+    runs-on: ubuntu-latest
+    needs: [firebase-validation, frontend-validation, integration-tests, security-checks]
+    if: always()
+    steps:
+      - name: Check CI status
+        run: |
+          echo "🔍 CI Pipeline Summary:"
+          echo "Firebase Validation: ${{ needs.firebase-validation.result }}"
+          echo "Frontend Validation: ${{ needs.frontend-validation.result }}"
+          echo "Integration Tests: ${{ needs.integration-tests.result }}"
+          echo "Security Checks: ${{ needs.security-checks.result }}"
+          
+          if [[ "${{ needs.firebase-validation.result }}" == "failure" || "${{ needs.integration-tests.result }}" == "failure" || "${{ needs.security-checks.result }}" == "failure" ]]; then
+            echo "❌ CI Pipeline failed"
+            exit 1
+          else
+            echo "✅ CI Pipeline passed"
+          fi

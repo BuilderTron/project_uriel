@@ -102,8 +102,24 @@ test:production() {
 # Code quality
 lint() {
     log_info "Running linters..."
-    cd services/frontend/webapp && npm run lint
-    cd ../../../services/backend/functions && npm run lint
+    
+    # Lint frontend if it exists
+    if [ -d "services/frontend/webapp" ] && [ -f "services/frontend/webapp/package.json" ]; then
+        if grep -q '"lint"' services/frontend/webapp/package.json; then
+            cd services/frontend/webapp && npm run lint
+            cd ../../..
+        else
+            log_warn "Frontend lint script not found, skipping"
+        fi
+    else
+        log_warn "Frontend not implemented yet (PU-12), skipping frontend linting"
+    fi
+    
+    # Lint backend functions
+    if [ -d "services/backend/functions" ] && [ -f "services/backend/functions/package.json" ]; then
+        cd services/backend/functions && npm run lint
+        cd ../../..
+    fi
 }
 
 format() {
@@ -114,8 +130,32 @@ format() {
 
 type-check() {
     log_info "Checking TypeScript types..."
-    cd services/frontend/webapp && npm run type-check
-    cd ../../../services/backend/functions && npm run type-check
+    
+    # Check frontend if it exists
+    if [ -d "services/frontend/webapp" ] && [ -f "services/frontend/webapp/package.json" ]; then
+        if grep -q '"type-check"' services/frontend/webapp/package.json; then
+            cd services/frontend/webapp && npm run type-check
+            cd ../../..
+        else
+            log_warn "Frontend type-check script not found, skipping"
+        fi
+    else
+        log_warn "Frontend not implemented yet (PU-12), skipping frontend type-check"
+    fi
+    
+    # Check backend functions (use build script for TypeScript compilation)
+    if [ -d "services/backend/functions" ] && [ -f "services/backend/functions/package.json" ]; then
+        if grep -q '"type-check"' services/backend/functions/package.json; then
+            cd services/backend/functions && npm run type-check
+            cd ../../..
+        elif grep -q '"build"' services/backend/functions/package.json; then
+            log_info "Using build script for TypeScript type checking..."
+            cd services/backend/functions && npm run build > /dev/null 2>&1
+            cd ../../..
+        else
+            log_warn "No TypeScript checking available for backend functions"
+        fi
+    fi
 }
 
 # Firebase commands
@@ -132,6 +172,136 @@ emulators:export() {
 emulators:import() {
     log_info "Importing emulator data..."
     cd infra/local && firebase emulators:start --import ./.firebase-export
+}
+
+# Firebase validation commands
+firebase:validate-rules() {
+    log_info "Validating Firebase security rules..."
+    cd services/backend
+    
+    # Check if Firestore rules exist
+    if [[ -f "firestore/firestore.rules" ]]; then
+        log_info "Testing Firestore security rules..."
+        if firebase emulators:exec --only firestore "npm run test:rules" 2>/dev/null; then
+            log_info "✅ Firestore rules validation passed"
+        else
+            log_error "❌ Firestore rules validation failed"
+            log_error "Run 'cd services/backend && firebase emulators:start' to debug"
+            cd ../..
+            return 1
+        fi
+    fi
+    
+    # Check if Storage rules exist
+    if [[ -f "storage/storage.rules" ]]; then
+        log_info "Validating Storage security rules..."
+        if firebase deploy --only storage:rules --dry-run > /dev/null 2>&1; then
+            log_info "✅ Storage rules validation passed"
+        else
+            log_error "❌ Storage rules validation failed"
+            cd ../..
+            return 1
+        fi
+    fi
+    
+    cd ../..
+    log_info "🎉 All Firebase rules validated successfully"
+}
+
+firebase:lint-functions() {
+    log_info "Linting Cloud Functions..."
+    cd services/backend/functions
+    
+    # TypeScript compilation
+    log_info "Checking TypeScript compilation..."
+    if ! npm run build > /dev/null 2>&1; then
+        log_error "❌ TypeScript compilation failed"
+        log_error "Run 'cd services/backend/functions && npm run build' for details"
+        cd ../../..
+        return 1
+    fi
+    
+    # ESLint
+    log_info "Running ESLint..."
+    if ! npm run lint; then
+        log_error "❌ ESLint validation failed"
+        log_error "Run 'cd services/backend/functions && npm run lint -- --fix' to auto-fix"
+        cd ../../..
+        return 1
+    fi
+    
+    cd ../../..
+    log_info "✅ Cloud Functions linting passed"
+}
+
+firebase:test-functions() {
+    log_info "Testing Cloud Functions..."
+    cd services/backend/functions
+    
+    if [[ -f "package.json" ]] && grep -q '"test"' package.json; then
+        if npm test; then
+            log_info "✅ Cloud Functions tests passed"
+        else
+            log_error "❌ Cloud Functions tests failed"
+            cd ../../..
+            return 1
+        fi
+    else
+        log_warn "No Cloud Functions tests found"
+    fi
+    
+    cd ../../..
+}
+
+firebase:check-config() {
+    log_info "Validating Firebase configuration files..."
+    
+    # firebase.json
+    if [[ -f "firebase.json" ]]; then
+        if python3 -m json.tool firebase.json > /dev/null 2>&1; then
+            log_info "✅ firebase.json syntax valid"
+        else
+            log_error "❌ firebase.json has invalid JSON syntax"
+            return 1
+        fi
+    fi
+    
+    # .firebaserc
+    if [[ -f ".firebaserc" ]]; then
+        if python3 -m json.tool .firebaserc > /dev/null 2>&1; then
+            log_info "✅ .firebaserc syntax valid"
+        else
+            log_error "❌ .firebaserc has invalid JSON syntax"
+            return 1
+        fi
+    fi
+    
+    # Firestore indexes
+    if [[ -f "services/backend/firestore/firestore.indexes.json" ]]; then
+        if python3 -m json.tool services/backend/firestore/firestore.indexes.json > /dev/null 2>&1; then
+            log_info "✅ firestore.indexes.json syntax valid"
+        else
+            log_error "❌ firestore.indexes.json has invalid JSON syntax"
+            return 1
+        fi
+    fi
+    
+    log_info "🎉 All Firebase configuration files validated"
+}
+
+firebase:validate-all() {
+    log_info "Running complete Firebase validation..."
+    firebase:check-config && \
+    firebase:validate-rules && \
+    firebase:lint-functions && \
+    firebase:test-functions
+    
+    if [[ $? -eq 0 ]]; then
+        log_info "🎉 All Firebase validations passed!"
+    else
+        log_error "❌ Firebase validation failed"
+        return 1
+    fi
 }
 
 deploy:staging() {
@@ -273,9 +443,14 @@ commands() {
     echo "  type-check      - Check TypeScript"
     echo ""
     echo "Firebase:"
-    echo "  emulators       - Start emulators"
-    echo "  deploy:staging  - Deploy to staging"
-    echo "  deploy:prod     - Deploy to production"
+    echo "  emulators              - Start emulators"
+    echo "  firebase:validate-all  - Run all Firebase validations"
+    echo "  firebase:validate-rules- Validate security rules"
+    echo "  firebase:lint-functions- Lint Cloud Functions"
+    echo "  firebase:test-functions- Test Cloud Functions"
+    echo "  firebase:check-config  - Validate Firebase config"
+    echo "  deploy:staging         - Deploy to staging"
+    echo "  deploy:prod            - Deploy to production"
     echo ""
     echo "Build:"
     echo "  build           - Build all"
@@ -293,6 +468,7 @@ commands() {
 export -f up down restart ps logs dev test test:all test:frontend test:backend
 export -f test:e2e test:deployment test:staging test:production lint format type-check 
 export -f emulators emulators:export emulators:import deploy:staging deploy:prod 
+export -f firebase:validate-rules firebase:lint-functions firebase:test-functions firebase:check-config firebase:validate-all
 export -f build build:frontend build:backend rebuild rebuild:docker clean clean:docker 
 export -f nuke db:seed db:reset monitor analyze lighthouse commands 
 export -f log_info log_warn log_error
