@@ -61,8 +61,12 @@ dev() {
 
 test() {
     log_info "Running all tests..."
-    test:frontend
-    test:backend
+    ./tests/scripts/run-all.sh
+}
+
+test:all() {
+    log_info "Running full test suite..."
+    ./tests/scripts/run-all.sh
 }
 
 test:frontend() {
@@ -78,6 +82,21 @@ test:backend() {
 test:e2e() {
     log_info "Running E2E tests..."
     cd services/frontend/webapp && npm run test:e2e
+}
+
+test:deployment() {
+    log_info "Testing deployment scripts..."
+    ./tests/deployment/test-deploy-scripts.sh
+}
+
+test:staging() {
+    log_info "Verifying staging deployment..."
+    ./tests/deployment/staging/verify.sh
+}
+
+test:production() {
+    log_info "Running production smoke tests..."
+    ./tests/deployment/production/smoke-test.sh
 }
 
 # Code quality
@@ -271,8 +290,9 @@ commands() {
 }
 
 # Export all functions
-export -f up down restart ps logs dev test test:frontend test:backend
-export -f test:e2e lint format type-check emulators emulators:export
-export -f emulators:import deploy:staging deploy:prod build build:frontend
-export -f build:backend rebuild rebuild:docker clean clean:docker nuke db:seed db:reset
-export -f monitor analyze lighthouse commands log_info log_warn log_error
+export -f up down restart ps logs dev test test:all test:frontend test:backend
+export -f test:e2e test:deployment test:staging test:production lint format type-check 
+export -f emulators emulators:export emulators:import deploy:staging deploy:prod 
+export -f build build:frontend build:backend rebuild rebuild:docker clean clean:docker 
+export -f nuke db:seed db:reset monitor analyze lighthouse commands 
+export -f log_info log_warn log_error

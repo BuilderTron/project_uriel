@@ -168,6 +168,7 @@ The project uses MEMORY.md files in each major directory to provide context-spec
 - **[Backend MEMORY](services/backend/MEMORY.md)** - Firebase Functions, Firestore, security rules, and Cloud Functions patterns
 - **[Infrastructure MEMORY](infra/MEMORY.md)** - Docker setup, deployment strategies, CI/CD with GitHub Actions
 - **[Scripts MEMORY](scripts/MEMORY.md)** - Developer commands and productivity tools (IMPORTANT: Always use these!)
+- **[Tests MEMORY](tests/MEMORY.md)** - Testing strategy, patterns, and deployment verification (CRITICAL: Use test commands!)
 
 ### Key Information from Memory Files
 
@@ -203,6 +204,15 @@ The project uses MEMORY.md files in each major directory to provide context-spec
 - `logs` - View service logs
 - Always run `source activate` to load commands!
 
+#### Testing Strategy (Comprehensive)
+
+- Multi-layer testing: Unit, Integration, E2E, Deployment
+- Deployment verification: `test:deployment`, `test:staging`, `test:production`
+- Performance testing: Lighthouse audits, bundle analysis
+- Security testing: Firebase rules, vulnerability scanning
+- CI/CD integration: Automated testing in GitHub Actions
+- Test commands: `test`, `test:frontend`, `test:backend`, `test:e2e`
+
 ## References
 
 - **[ROADMAP](docs/ROADMAP.md)** - Sprint progress tracking with checkboxes (UPDATE THIS!)
@@ -211,6 +221,7 @@ The project uses MEMORY.md files in each major directory to provide context-spec
 - [Backend MEMORY](services/backend/MEMORY.md) - Backend-specific guidance
 - [Infrastructure MEMORY](infra/MEMORY.md) - Deployment and CI/CD guidance
 - [Scripts MEMORY](scripts/MEMORY.md) - Developer commands reference
+- [Tests MEMORY](tests/MEMORY.md) - Testing strategy and deployment verification
 - Context7 - Latest best practices and examples
 
 ## Setup Reminder
