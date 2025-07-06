@@ -5,6 +5,7 @@
 Project Uriel is a modern personal portfolio application designed to showcase professional experience, projects, blog posts, and contact information. Built with React and Firebase, it emphasizes performance, scalability, and developer experience through containerized local development.
 
 ### Technology Stack
+
 - **Frontend**: React (Vite), Tailwind CSS, TypeScript
 - **Backend**: Firebase (Firestore, Auth, Cloud Functions, Storage)
 - **Infrastructure**: Docker, Firebase Emulator Suite
@@ -14,11 +15,13 @@ Project Uriel is a modern personal portfolio application designed to showcase pr
 ## Implementation Phases
 
 ### Phase 1: Infrastructure & Local Development Environment
+
 **Objective**: Establish a robust, containerized development environment with Firebase emulators and developer tooling.
 
 **Duration**: 1-2 days
 
 **Key Deliverables**:
+
 1. **Docker Configuration**
    - `docker-compose.yml` with Firebase emulator suite
    - Custom Firebase emulator Docker image (if needed)
@@ -51,11 +54,13 @@ Project Uriel is a modern personal portfolio application designed to showcase pr
    - Architecture decisions record (ADR)
 
 ### Phase 2: Backend Services Setup
+
 **Objective**: Configure Firebase services with proper structure, security rules, and initial Cloud Functions.
 
 **Duration**: 2-3 days
 
 **Key Deliverables**:
+
 1. **Firebase Project Configuration**
    - Initialize Firebase project
    - Configure emulator suite
@@ -64,6 +69,7 @@ Project Uriel is a modern personal portfolio application designed to showcase pr
 
 2. **Firestore Database Design**
    - Collections structure:
+
      ```
      /users/{userId}
      /projects/{projectId}
@@ -71,6 +77,7 @@ Project Uriel is a modern personal portfolio application designed to showcase pr
      /contact-messages/{messageId}
      /analytics/{eventId}
      ```
+
    - Security rules with proper validation
    - Composite indexes for queries
    - Data migration scripts
@@ -95,11 +102,13 @@ Project Uriel is a modern personal portfolio application designed to showcase pr
    - Session management
 
 ### Phase 3: Frontend Foundation
+
 **Objective**: Create a performant React application with proper routing, state management, and Firebase integration.
 
 **Duration**: 2-3 days
 
 **Key Deliverables**:
+
 1. **React Application Setup**
    - Vite configuration with TypeScript
    - Project structure following feature-based organization
@@ -134,11 +143,13 @@ Project Uriel is a modern personal portfolio application designed to showcase pr
    - Cache management strategy
 
 ### Phase 4: Core Features Implementation
+
 **Objective**: Build the main portfolio features with full CRUD operations and responsive design.
 
 **Duration**: 5-7 days
 
 **Key Deliverables**:
+
 1. **Portfolio/Projects Section**
    - Project grid/list views
    - Detailed project pages
@@ -178,11 +189,13 @@ Project Uriel is a modern personal portfolio application designed to showcase pr
    - Site settings
 
 ### Phase 5: Enhancement & Optimization
+
 **Objective**: Improve performance, SEO, and user experience with advanced features.
 
 **Duration**: 3-4 days
 
 **Key Deliverables**:
+
 1. **Performance Optimization**
    - Lighthouse audit improvements
    - Image lazy loading
@@ -212,11 +225,13 @@ Project Uriel is a modern personal portfolio application designed to showcase pr
    - Theme customization
 
 ### Phase 6: Testing & Quality Assurance
+
 **Objective**: Ensure code quality, reliability, and maintainability through comprehensive testing.
 
 **Duration**: 2-3 days
 
 **Key Deliverables**:
+
 1. **Testing Strategy**
    - Unit tests (Vitest)
    - Integration tests
@@ -239,11 +254,13 @@ Project Uriel is a modern personal portfolio application designed to showcase pr
    - Architecture diagrams
 
 ### Phase 7: Deployment & CI/CD
+
 **Objective**: Set up automated deployment pipelines and production infrastructure.
 
 **Duration**: 2-3 days
 
 **Key Deliverables**:
+
 1. **CI/CD Pipeline** (GitHub Actions)
    - Automated testing on PR
    - Build and deployment workflows
@@ -275,6 +292,7 @@ Project Uriel is a modern personal portfolio application designed to showcase pr
 ## Technical Specifications
 
 ### Frontend Architecture
+
 ```
 services/frontend/webapp/
 ├── src/
@@ -294,6 +312,7 @@ services/frontend/webapp/
 ```
 
 ### Backend Architecture
+
 ```
 services/backend/
 ├── functions/
@@ -312,6 +331,7 @@ services/backend/
 ```
 
 ### Environment Variables
+
 ```
 # Firebase Configuration
 VITE_FIREBASE_API_KEY=
@@ -335,6 +355,7 @@ VITE_ENABLE_COMMENTS=false
 ```
 
 ## Success Metrics
+
 - Lighthouse score > 95
 - Time to Interactive < 3s
 - SEO score 100
@@ -344,6 +365,7 @@ VITE_ENABLE_COMMENTS=false
 - Deployment time < 5 minutes
 
 ## Risk Mitigation
+
 - Regular backups of Firestore data
 - Staging environment for testing
 - Feature flags for gradual rollouts
@@ -352,6 +374,7 @@ VITE_ENABLE_COMMENTS=false
 - Security audit before launch
 
 ## Timeline Summary
+
 - **Total Duration**: 17-24 days
 - **Phase 1-2**: Infrastructure & Backend (3-5 days)
 - **Phase 3-4**: Frontend & Features (7-10 days)

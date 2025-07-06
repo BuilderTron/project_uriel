@@ -46,25 +46,28 @@ project_uriel/
 ### Quick Start
 
 1. Clone the repository:
+
    ```bash
    git clone https://github.com/yourusername/project_uriel.git
    cd project_uriel
    ```
 
 2. Run the setup script:
+
    ```bash
    ./setup.sh
    ```
 
 3. Start the development environment:
+
    ```bash
    source activate
    up
    ```
 
 4. Access the application:
-   - Frontend: http://localhost:5173
-   - Firebase Emulator UI: http://localhost:4000
+   - Frontend: <http://localhost:5173>
+   - Firebase Emulator UI: <http://localhost:4000>
 
 ## 📚 Documentation
 
@@ -111,10 +114,6 @@ The project uses GitHub Actions for CI/CD:
 2. Create a release tag for production deployment
 3. Rollback available through Firebase console
 
-## 🤝 Contributing
-
-Please read [CONTRIBUTING.md](docs/CONTRIBUTING.md) for details on our code of conduct and the process for submitting pull requests.
-
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
@@ -131,10 +130,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - Built with modern web technologies
 - Inspired by best practices from the developer community
-- Special thanks to all contributors
 
 ---
 
 **Status**: 🚧 Under Development
 
-*Last Updated: January 2025*
+*Last Updated: July 2025*

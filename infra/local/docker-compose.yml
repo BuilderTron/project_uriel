@@ -1,0 +1,72 @@
+name: "uriel"
+
+services:
+  firebase-emulators:
+    build:
+      context: .
+      dockerfile: Dockerfile.firebase
+    container_name: uriel-firebase-emulators
+    ports:
+      - "4000:4000"  # Emulator UI
+      - "5001:5001"  # Functions
+      - "8080:8080"  # Firestore
+      - "9099:9099"  # Auth
+      - "9199:9199"  # Storage
+      - "9299:9299"  # Eventarc
+    volumes:
+      - firebase-data:/app/.firebase
+      - firebase-config:/app/config
+    environment:
+      - FIREBASE_PROJECT=${FIREBASE_PROJECT_ID:-demo-project-uriel-local}
+      - GOOGLE_APPLICATION_CREDENTIALS=/app/service-account.json
+      - FIRESTORE_EMULATOR_HOST=0.0.0.0:8080
+      - FIREBASE_AUTH_EMULATOR_HOST=0.0.0.0:9099
+      - FIREBASE_STORAGE_EMULATOR_HOST=0.0.0.0:9199
+    networks:
+      - uriel-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    restart: unless-stopped
+
+  frontend:
+    image: node:18-alpine
+    container_name: uriel-frontend
+    working_dir: /app
+    ports:
+      - "5173:5173"
+    volumes:
+      - ../../services/frontend/webapp:/app
+      - frontend-node-modules:/app/node_modules
+    environment:
+      - VITE_FIREBASE_EMULATOR_HOST=firebase-emulators
+      - VITE_USE_EMULATORS=true
+      - VITE_FIREBASE_PROJECT_ID=project-uriel-local
+      - VITE_FIREBASE_AUTH_EMULATOR_URL=http://localhost:9099
+      - VITE_FIRESTORE_EMULATOR_HOST=localhost:8080
+      - VITE_FIREBASE_FUNCTIONS_EMULATOR_URL=http://localhost:5001
+      - VITE_FIREBASE_STORAGE_EMULATOR_HOST=localhost:9199
+      - NODE_ENV=development
+    command: sh -c "npm install && npm run dev -- --host 0.0.0.0"
+    networks:
+      - uriel-network
+    depends_on:
+      firebase-emulators:
+        condition: service_healthy
+    restart: unless-stopped
+
+networks:
+  uriel-network:
+    driver: bridge
+    name: uriel-network
+
+volumes:
+  firebase-data:
+    name: uriel-firebase-data
+  firebase-config:
+    name: uriel-firebase-config
+  frontend-node-modules:
+    name: uriel-frontend-node-modules

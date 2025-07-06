@@ -1,0 +1,33 @@
+{
+  "projects": {
+    "default": "demo-project-uriel-local",
+    "local": "demo-project-uriel-local",
+    "development": "project-uriel-dev",
+    "staging": "project-uriel-staging", 
+    "production": "project-uriel"
+  },
+  "targets": {
+    "project-uriel": {
+      "hosting": {
+        "prod": [
+          "project-uriel"
+        ]
+      }
+    },
+    "project-uriel-staging": {
+      "hosting": {
+        "staging": [
+          "project-uriel-staging"
+        ]
+      }
+    },
+    "project-uriel-dev": {
+      "hosting": {
+        "dev": [
+          "project-uriel-dev"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}

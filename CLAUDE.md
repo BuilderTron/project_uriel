@@ -9,6 +9,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Technology Stack
 
 ### Frontend
+
 - **Framework**: React 18+ with TypeScript
 - **Build Tool**: Vite
 - **Styling**: Tailwind CSS
@@ -17,6 +18,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Testing**: Vitest + React Testing Library + Playwright (E2E)
 
 ### Backend
+
 - **Platform**: Firebase
 - **Database**: Firestore
 - **Authentication**: Firebase Auth
@@ -25,13 +27,15 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Hosting**: Firebase Hosting / App Hosting
 
 ### Infrastructure
+
 - **Local Development**: Docker + Firebase Emulator Suite
 - **CI/CD**: GitHub Actions
 - **Monitoring**: Firebase Performance Monitoring + Sentry
 
 ## Project Structure
 
-```
+```bash
+
 project_uriel/
 ├── services/
 │   ├── backend/
@@ -43,11 +47,13 @@ project_uriel/
 ├── infra/                 # Environment configs
 ├── scripts/               # Developer commands
 └── docs/                  # Documentation
+
 ```
 
 ## Development Commands
 
 After running `source activate`:
+
 - `up` - Start all services
 - `down` - Stop all services
 - `logs` - View logs
@@ -57,32 +63,53 @@ After running `source activate`:
 
 ## Important Guidelines
 
-### 1. Always Use Context7 for Best Practices
+### 1. Use GitHub CLI (gh) Commands
+
+- **IMPORTANT**: Use `gh` commands instead of GitHub App integration
+- `gh pr create` - Create pull requests from feature branches
+- `gh issue list` - View Jira-linked GitHub issues
+- `gh repo view` - Check repository status and deployments
+- `gh workflow run` - Trigger CI/CD workflows manually
+
+### 2. Use Atlassian MCP for Jira Management
+
+- **PROJECT**: Project Uriel (PU) tickets in Jira
+- Use `mcp__atlassian__*` functions for ticket updates
+- Update ticket status when starting/completing work
+- Link GitHub PRs to Jira tickets in commit messages
+- Follow PU-XXX ticket numbering (e.g., PU-3, PU-7)
+
+### 3. Always Use Context7 for Best Practices
+
 - **CRITICAL**: Reference context7 for the latest Firebase and React best practices
 - Check context7 for security patterns, performance optimizations, and architectural decisions
 - Use context7 examples for Firebase emulator configurations and Docker setups
 
-### 2. Code Standards
+### 4. Code Standards
+
 - Use TypeScript for all new code
 - Follow React hooks best practices
 - Implement proper error boundaries
 - Use Tailwind CSS utility classes
 - Write tests for all new features
 
-### 3. Firebase Patterns
+### 5. Firebase Patterns
+
 - Use Firestore security rules for all data access
 - Implement proper indexes for queries
 - Use Cloud Functions for server-side logic
 - Follow Firebase naming conventions
 
-### 4. Performance Requirements
+### 6. Performance Requirements
+
 - Lighthouse score must be >95
 - Time to Interactive <3s
 - Implement code splitting
 - Use lazy loading for images
 - Cache Firebase queries appropriately
 
-### 5. Security First
+### 7. Security First
+
 - Never expose API keys in frontend code
 - Validate all user inputs
 - Use Firebase security rules extensively
@@ -90,6 +117,7 @@ After running `source activate`:
 - Follow OWASP best practices
 
 ## Branch Strategy (from Hermes)
+
 - `main` - Production branch
 - `develop` - Integration branch
 - `feature/*` - Feature branches
@@ -97,6 +125,7 @@ After running `source activate`:
 - `release/*` - Release preparation
 
 ## Testing Requirements
+
 - Unit test coverage >80%
 - Integration tests for all API endpoints
 - E2E tests for critical user flows
@@ -106,6 +135,7 @@ After running `source activate`:
 ## Common Tasks
 
 ### Adding a New Feature
+
 1. Create feature branch from develop
 2. Update MEMORY.md if adding new patterns
 3. Write tests first (TDD approach)
@@ -114,12 +144,14 @@ After running `source activate`:
 6. Create PR to develop
 
 ### Updating Firebase Rules
+
 1. Edit rules in `services/backend/firestore/firestore.rules`
 2. Test locally with emulators
 3. Run Firebase rules tests
 4. Deploy to staging first
 
 ### Performance Optimization
+
 1. Run Lighthouse audit
 2. Check bundle size with `build --analyze`
 3. Implement suggested optimizations
@@ -131,6 +163,7 @@ After running `source activate`:
 The project uses MEMORY.md files in each major directory to provide context-specific guidance:
 
 ### Service-Specific Memory Files
+
 - **[Frontend MEMORY](services/frontend/webapp/MEMORY.md)** - React, TypeScript, Vite, Tailwind CSS patterns and best practices
 - **[Backend MEMORY](services/backend/MEMORY.md)** - Firebase Functions, Firestore, security rules, and Cloud Functions patterns
 - **[Infrastructure MEMORY](infra/MEMORY.md)** - Docker setup, deployment strategies, CI/CD with GitHub Actions
@@ -139,6 +172,7 @@ The project uses MEMORY.md files in each major directory to provide context-spec
 ### Key Information from Memory Files
 
 #### Frontend (React + TypeScript + Vite)
+
 - Strict TypeScript configuration with type safety
 - TanStack Query for server state management
 - Feature-based folder structure
@@ -146,13 +180,15 @@ The project uses MEMORY.md files in each major directory to provide context-spec
 - Testing with Vitest and Playwright
 
 #### Backend (Firebase)
+
 - Cloud Functions with Node.js 18+
 - Firestore security rules with RBAC
 - Email integration with SendGrid
 - Proper error handling and logging
 - Cost optimization strategies
 
-#### Infrastructure
+#### Infrastructure Setup
+
 - Docker Compose for local development
 - Firebase Emulator Suite for offline development
 - Multi-environment setup (local, dev, staging, prod)
@@ -160,6 +196,7 @@ The project uses MEMORY.md files in each major directory to provide context-spec
 - Security headers and monitoring
 
 #### Developer Commands
+
 - `up`/`down` - Start/stop services
 - `test` - Run all tests
 - `deploy:staging`/`deploy:prod` - Deployment commands
@@ -167,6 +204,8 @@ The project uses MEMORY.md files in each major directory to provide context-spec
 - Always run `source activate` to load commands!
 
 ## References
+
+- **[ROADMAP](docs/ROADMAP.md)** - Sprint progress tracking with checkboxes (UPDATE THIS!)
 - [Project Plan](docs/PROJECT_PLAN.md) - Detailed implementation phases
 - [Frontend MEMORY](services/frontend/webapp/MEMORY.md) - Frontend-specific guidance
 - [Backend MEMORY](services/backend/MEMORY.md) - Backend-specific guidance
@@ -175,7 +214,9 @@ The project uses MEMORY.md files in each major directory to provide context-spec
 - Context7 - Latest best practices and examples
 
 ## Setup Reminder
+
 If `setup.sh` hasn't been run yet, it needs to be created and executed to:
+
 1. Install dependencies
 2. Set up Firebase configuration
 3. Create environment files
