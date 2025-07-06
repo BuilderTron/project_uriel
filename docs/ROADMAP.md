@@ -27,7 +27,7 @@
 
 - [ ] **PU-5** - Environment Configuration & Scripts
   - Branch: `feature/PU-5-env-config-scripts`
-  - Status: ⏸️ Pending
+  - Status: 🚧 In Progress
   - Assignee: Jose J Lopez
   - Description: Hermes-style productivity commands
 
@@ -235,9 +235,9 @@
 ## Current Focus
 
 **Active Sprint**: Sprint 1
-**Current Task**: PU-5 - Environment Configuration & Scripts ⏸️
-**Active Branch**: `feature/PU-4-firebase-emulator-config` (Ready for merge)
-**Next Task**: PU-5 - Environment Configuration & Scripts
+**Current Task**: PU-5 - Environment Configuration & Scripts 🚧
+**Active Branch**: `feature/PU-5-env-config-scripts`
+**Next Task**: PU-6 - Git Hooks & CI Pipeline Foundation
 
 ### Recent Completion Notes
 
@@ -267,8 +267,8 @@ Following Hermes patterns:
 main
 ├── sprint/sprint-01
 │   ├── feature/PU-3-docker-compose-setup (✅ Completed)
-│   ├── feature/PU-4-firebase-emulator-config (🚧 In Progress)
-│   ├── feature/PU-5-env-config-scripts
+│   ├── feature/PU-4-firebase-emulator-config (✅ Completed)
+│   ├── feature/PU-5-env-config-scripts (🚧 In Progress)
 │   └── feature/PU-6-git-hooks-ci-foundation
 ├── sprint/sprint-02
 ├── sprint/sprint-03
