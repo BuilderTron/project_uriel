@@ -33,7 +33,7 @@
 
 - [ ] **PU-6** - Git Hooks & CI Pipeline Foundation
   - Branch: `feature/PU-6-git-hooks-ci-foundation`
-  - Status: ⏸️ Pending
+  - Status: 🚧 In Progress
   - Assignee: Jose J Lopez
   - Description: Pre-push hooks, GitHub Actions foundation
 
@@ -235,9 +235,9 @@
 ## Current Focus
 
 **Active Sprint**: Sprint 1
-**Current Task**: PU-6 - Git Hooks & CI Pipeline Foundation ⏸️
-**Active Branch**: `feature/PU-5-env-config-scripts` (completed)
-**Next Task**: PU-6 - Git Hooks & CI Pipeline Foundation
+**Current Task**: PU-6 - Git Hooks & CI Pipeline Foundation 🚧
+**Active Branch**: `feature/PU-6-git-hooks-ci-foundation`
+**Next Task**: PU-7 - Firestore Data Model & Security Rules
 
 ### Recent Completion Notes
 

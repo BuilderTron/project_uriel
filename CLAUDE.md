@@ -69,21 +69,38 @@ After running `source activate`:
 
 **CRITICAL**: When user says "close out ticket", execute this COMPLETE workflow automatically without stopping:
 
-1. **Update Jira Ticket**
-   - Add detailed completion comment with accomplishments
-   - Transition current ticket from In Progress → Done
+1. **Update Documentation & Memory**
+   - Update relevant MEMORY.md files with new patterns/learnings
+   - Update any documentation files affected by the work
 
-2. **Update Documentation**
-   - Update ROADMAP.md with completion status and notes
-   - Mark current task as completed with ✅
-   - Update progress percentages
-
-3. **Commit Changes**
+2. **Commit & Push**
    - Create comprehensive commit with proper message format
    - Include 🤖 Generated with Claude Code footer
-   - Stage and commit all changes
+   - Push to current feature branch
 
-4. **Clear Todos**
+3. **Merge to Sprint Branch**
+   - Merge feature branch to sprint branch
+   - Clean up merged feature branch
+
+4. **Update Jira Ticket**
+   - Add detailed completion comment with what was accomplished
+   - Include key deliverables and verification steps
+
+5. **Transition Tickets**
+   - Move current ticket from In Progress → Done
+   - Move next ticket from Pending → In Progress
+
+6. **Create New Branch**
+   - Create new feature branch for next ticket from sprint branch
+   - Use format: `feature/PU-X-ticket-name`
+
+7. **Update Roadmap**
+   - Update progress percentages
+   - Mark current task as completed
+   - Update "Current Focus" section with next task
+   - Add completion notes
+
+8. **Clear Todos**
    - Clear completed todo list items
 
 **IMPORTANT**: Run this entire process to completion automatically. Do NOT stop and ask for confirmation between steps.
@@ -126,18 +143,21 @@ After running `source activate`:
 - Follow Firebase naming conventions
 
 #### Security Rules Architecture
+
 - Use helper functions for common auth checks (`isAuthenticated()`, `isAdmin()`, `isOwner()`)
 - Implement RBAC with admin/user/public permission levels
 - Collection-specific rules for portfolio data (projects, blog, experience, messages)
 - Defensive security with explicit denials
 
 #### Firestore Indexes Strategy
+
 - Composite indexes for sorting + filtering combinations
 - Array-contains indexes for tags/technologies
 - Collection group indexes for subcollections
 - Field overrides for array fields
 
 #### Cloud Functions Structure
+
 - TypeScript-first with strict type checking
 - Modular function organization (contact, blog, analytics)
 - Proper error handling with HttpsError
@@ -257,6 +277,7 @@ The project uses MEMORY.md files in each major directory to provide context-spec
 - Docker volume mounting: Read-only backend files for faster rebuilds
 
 ##### Key Commands
+
 ```bash
 # Start services
 source activate && up
