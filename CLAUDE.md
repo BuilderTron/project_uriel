@@ -63,7 +63,32 @@ After running `source activate`:
 
 ## Important Guidelines
 
-### 1. Use GitHub CLI (gh) Commands
+### 1. Close Out Ticket Process
+
+**Key Phrase**: "close out ticket"
+
+**CRITICAL**: When user says "close out ticket", execute this COMPLETE workflow automatically without stopping:
+
+1. **Update Jira Ticket**
+   - Add detailed completion comment with accomplishments
+   - Transition current ticket from In Progress → Done
+
+2. **Update Documentation**
+   - Update ROADMAP.md with completion status and notes
+   - Mark current task as completed with ✅
+   - Update progress percentages
+
+3. **Commit Changes**
+   - Create comprehensive commit with proper message format
+   - Include 🤖 Generated with Claude Code footer
+   - Stage and commit all changes
+
+4. **Clear Todos**
+   - Clear completed todo list items
+
+**IMPORTANT**: Run this entire process to completion automatically. Do NOT stop and ask for confirmation between steps.
+
+### 2. Use GitHub CLI (gh) Commands
 
 - **IMPORTANT**: Use `gh` commands instead of GitHub App integration
 - `gh pr create` - Create pull requests from feature branches
@@ -71,7 +96,7 @@ After running `source activate`:
 - `gh repo view` - Check repository status and deployments
 - `gh workflow run` - Trigger CI/CD workflows manually
 
-### 2. Use Atlassian MCP for Jira Management
+### 3. Use Atlassian MCP for Jira Management
 
 - **PROJECT**: Project Uriel (PU) tickets in Jira
 - Use `mcp__atlassian__*` functions for ticket updates
@@ -79,13 +104,13 @@ After running `source activate`:
 - Link GitHub PRs to Jira tickets in commit messages
 - Follow PU-XXX ticket numbering (e.g., PU-3, PU-7)
 
-### 3. Always Use Context7 for Best Practices
+### 4. Always Use Context7 for Best Practices
 
 - **CRITICAL**: Reference context7 for the latest Firebase and React best practices
 - Check context7 for security patterns, performance optimizations, and architectural decisions
 - Use context7 examples for Firebase emulator configurations and Docker setups
 
-### 4. Code Standards
+### 5. Code Standards
 
 - Use TypeScript for all new code
 - Follow React hooks best practices
@@ -93,14 +118,32 @@ After running `source activate`:
 - Use Tailwind CSS utility classes
 - Write tests for all new features
 
-### 5. Firebase Patterns
+### 6. Firebase Patterns
 
 - Use Firestore security rules for all data access
 - Implement proper indexes for queries
 - Use Cloud Functions for server-side logic
 - Follow Firebase naming conventions
 
-### 6. Performance Requirements
+#### Security Rules Architecture
+- Use helper functions for common auth checks (`isAuthenticated()`, `isAdmin()`, `isOwner()`)
+- Implement RBAC with admin/user/public permission levels
+- Collection-specific rules for portfolio data (projects, blog, experience, messages)
+- Defensive security with explicit denials
+
+#### Firestore Indexes Strategy
+- Composite indexes for sorting + filtering combinations
+- Array-contains indexes for tags/technologies
+- Collection group indexes for subcollections
+- Field overrides for array fields
+
+#### Cloud Functions Structure
+- TypeScript-first with strict type checking
+- Modular function organization (contact, blog, analytics)
+- Proper error handling with HttpsError
+- SendGrid integration for email functionality
+
+### 7. Performance Requirements
 
 - Lighthouse score must be >95
 - Time to Interactive <3s
@@ -108,7 +151,7 @@ After running `source activate`:
 - Use lazy loading for images
 - Cache Firebase queries appropriately
 
-### 7. Security First
+### 8. Security First
 
 - Never expose API keys in frontend code
 - Validate all user inputs
@@ -168,6 +211,7 @@ The project uses MEMORY.md files in each major directory to provide context-spec
 - **[Backend MEMORY](services/backend/MEMORY.md)** - Firebase Functions, Firestore, security rules, and Cloud Functions patterns
 - **[Infrastructure MEMORY](infra/MEMORY.md)** - Docker setup, deployment strategies, CI/CD with GitHub Actions
 - **[Scripts MEMORY](scripts/MEMORY.md)** - Developer commands and productivity tools (IMPORTANT: Always use these!)
+- **[Tests MEMORY](tests/MEMORY.md)** - Testing strategy, patterns, and deployment verification (CRITICAL: Use test commands!)
 
 ### Key Information from Memory Files
 
@@ -203,6 +247,40 @@ The project uses MEMORY.md files in each major directory to provide context-spec
 - `logs` - View service logs
 - Always run `source activate` to load commands!
 
+#### Development Workflow
+
+- Use `up`/`down` commands for service management
+- `rebuild:docker` for clean container rebuilds
+- `nuke` command for complete environment reset (type "nuke everything" to confirm)
+- Firebase UI at localhost:4000 for testing
+- Security rules testing: Verify custom rules vs default rules
+- Docker volume mounting: Read-only backend files for faster rebuilds
+
+##### Key Commands
+```bash
+# Start services
+source activate && up
+
+# Rebuild everything
+rebuild:docker
+
+# Nuclear option (fixed)
+nuke  # Type "nuke everything" to confirm
+
+# Test emulators
+curl http://localhost:4000  # UI
+curl http://localhost:8080  # Firestore
+```
+
+#### Testing Strategy (Comprehensive)
+
+- Multi-layer testing: Unit, Integration, E2E, Deployment
+- Deployment verification: `test:deployment`, `test:staging`, `test:production`
+- Performance testing: Lighthouse audits, bundle analysis
+- Security testing: Firebase rules, vulnerability scanning
+- CI/CD integration: Automated testing in GitHub Actions
+- Test commands: `test`, `test:frontend`, `test:backend`, `test:e2e`
+
 ## References
 
 - **[ROADMAP](docs/ROADMAP.md)** - Sprint progress tracking with checkboxes (UPDATE THIS!)
@@ -211,6 +289,7 @@ The project uses MEMORY.md files in each major directory to provide context-spec
 - [Backend MEMORY](services/backend/MEMORY.md) - Backend-specific guidance
 - [Infrastructure MEMORY](infra/MEMORY.md) - Deployment and CI/CD guidance
 - [Scripts MEMORY](scripts/MEMORY.md) - Developer commands reference
+- [Tests MEMORY](tests/MEMORY.md) - Testing strategy and deployment verification
 - Context7 - Latest best practices and examples
 
 ## Setup Reminder
