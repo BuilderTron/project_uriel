@@ -536,6 +536,20 @@ export const apiEndpoint = functions.https.onRequest(
 ### Issue: CORS Errors
 **Solution**: Configure CORS properly in Express middleware
 
+### Issue: TypeScript Compilation with Firebase Context
+**Solution**: Use proper import paths and ensure firebase-admin is initialized before use:
+```typescript
+// Correct initialization pattern
+import { initializeApp, cert } from 'firebase-admin/app';
+import { getAuth } from 'firebase-admin/auth';
+import { getFirestore } from 'firebase-admin/firestore';
+
+// Initialize once at module level
+const app = initializeApp();
+const auth = getAuth(app);
+const db = getFirestore(app);
+```
+
 ## Firestore Data Model & Security Rules Implementation (PU-7)
 
 ### TypeScript Data Model Architecture
@@ -728,6 +742,235 @@ Before code reaches production, it must pass:
 - ✅ Cloud Functions compile and pass linting
 - ✅ Integration tests pass with Docker services
 - ✅ No high-severity security vulnerabilities
+
+## Authentication System Implementation (PU-8)
+
+### Authentication Middleware Architecture
+
+Comprehensive Express middleware system for Firebase Authentication with RBAC:
+
+#### Core Middleware Components
+
+```typescript
+// middleware/auth.ts - Authentication verification
+export const authenticate = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const idToken = extractBearerToken(req);
+    if (!idToken) {
+      throw new HttpsError('unauthenticated', 'No authentication token provided');
+    }
+    
+    const decodedToken = await admin.auth().verifyIdToken(idToken);
+    req.user = decodedToken;
+    next();
+  } catch (error) {
+    handleAuthError(error, res);
+  }
+};
+
+// middleware/rbac.ts - Role-based access control
+export const requireRole = (role: UserRole) => {
+  return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    if (!req.user) {
+      return res.status(401).json({ error: 'Authentication required' });
+    }
+    
+    if (req.user.role !== role && req.user.role !== 'admin') {
+      return res.status(403).json({ error: 'Insufficient permissions' });
+    }
+    
+    next();
+  };
+};
+```
+
+#### Security Headers Configuration
+
+```typescript
+// middleware/security.ts - Comprehensive security headers
+export const securityHeaders = (req: Request, res: Response, next: NextFunction): void => {
+  // CSP for XSS protection
+  res.setHeader('Content-Security-Policy', "default-src 'self'");
+  
+  // Prevent clickjacking
+  res.setHeader('X-Frame-Options', 'DENY');
+  
+  // Prevent MIME sniffing
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  
+  // XSS Protection
+  res.setHeader('X-XSS-Protection', '1; mode=block');
+  
+  // HSTS
+  res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+  
+  next();
+};
+```
+
+#### Rate Limiting Implementation
+
+```typescript
+// middleware/rateLimiter.ts - Token bucket algorithm
+interface RateLimitConfig {
+  windowMs: number;
+  maxRequests: number;
+  keyGenerator?: (req: Request) => string;
+}
+
+export const createRateLimiter = (config: RateLimitConfig) => {
+  const store = new Map<string, TokenBucket>();
+  
+  return (req: Request, res: Response, next: NextFunction): void => {
+    const key = config.keyGenerator?.(req) || req.ip;
+    const bucket = store.get(key) || new TokenBucket(config);
+    
+    if (!bucket.consume()) {
+      return res.status(429).json({ 
+        error: 'Too many requests',
+        retryAfter: bucket.getResetTime()
+      });
+    }
+    
+    next();
+  };
+};
+
+// Pre-configured rate limiters
+export const apiRateLimit = createRateLimiter({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  maxRequests: 100
+});
+
+export const authRateLimit = createRateLimiter({
+  windowMs: 15 * 60 * 1000,
+  maxRequests: 5 // Strict for auth endpoints
+});
+```
+
+### Custom Claims Management
+
+Pattern for managing user roles with Firebase custom claims:
+
+```typescript
+// utils/auth/claims.ts
+export const setUserRole = async (uid: string, role: UserRole): Promise<void> => {
+  await admin.auth().setCustomUserClaims(uid, { role });
+  
+  // Update Firestore user document
+  await admin.firestore().collection('users').doc(uid).update({
+    role,
+    updatedAt: admin.firestore.FieldValue.serverTimestamp()
+  });
+};
+
+// Verify claims in Cloud Functions
+export const verifyAdminRole = async (context: CallableContext): Promise<void> => {
+  if (!context.auth) {
+    throw new HttpsError('unauthenticated', 'Authentication required');
+  }
+  
+  if (context.auth.token.role !== 'admin') {
+    throw new HttpsError('permission-denied', 'Admin role required');
+  }
+};
+```
+
+### Express App Configuration
+
+Proper middleware ordering for security and performance:
+
+```typescript
+// api/index.ts - Express app setup
+const app = express();
+
+// 1. Security headers (first!)
+app.use(securityHeaders);
+
+// 2. CORS configuration
+app.use(cors({
+  origin: functions.config().app.allowed_origins?.split(',') || '*',
+  credentials: true
+}));
+
+// 3. Body parsing
+app.use(express.json({ limit: '10mb' }));
+
+// 4. Request logging
+app.use(requestLogger);
+
+// 5. Rate limiting
+app.use('/api/', apiRateLimit);
+app.use('/api/auth/', authRateLimit);
+
+// 6. Authentication (for protected routes)
+app.use('/api/admin/*', authenticate, requireRole('admin'));
+app.use('/api/user/*', authenticate);
+
+// 7. Route handlers
+app.use('/api/auth', authRoutes);
+app.use('/api/projects', projectRoutes);
+app.use('/api/blog', blogRoutes);
+
+// 8. Error handling
+app.use(errorHandler);
+```
+
+### Authentication Testing Patterns
+
+Comprehensive testing approach for auth middleware:
+
+```typescript
+// __tests__/middleware/auth.test.ts
+describe('Authentication Middleware', () => {
+  let mockRequest: Partial<Request>;
+  let mockResponse: Partial<Response>;
+  let nextFunction: NextFunction;
+
+  beforeEach(() => {
+    mockRequest = {
+      headers: {},
+      user: undefined
+    };
+    mockResponse = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn()
+    };
+    nextFunction = jest.fn();
+  });
+
+  it('should authenticate valid token', async () => {
+    const mockToken = 'valid-token';
+    mockRequest.headers = { authorization: `Bearer ${mockToken}` };
+    
+    jest.spyOn(admin.auth(), 'verifyIdToken')
+      .mockResolvedValueOnce({ uid: 'test-uid' } as any);
+    
+    await authenticate(
+      mockRequest as Request,
+      mockResponse as Response,
+      nextFunction
+    );
+    
+    expect(mockRequest.user).toBeDefined();
+    expect(nextFunction).toHaveBeenCalled();
+  });
+});
+```
+
+### Security Best Practices Applied
+
+1. **Token Extraction**: Secure bearer token extraction with validation
+2. **Error Handling**: Proper error responses without leaking information
+3. **RBAC Implementation**: Role-based access with custom claims
+4. **Rate Limiting**: Protect against abuse with configurable limits
+5. **Security Headers**: Comprehensive headers for XSS, clickjacking prevention
+6. **Middleware Ordering**: Correct order for security and performance
+7. **Testing Coverage**: Unit tests for all middleware components
 
 ## References
 

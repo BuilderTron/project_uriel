@@ -76,6 +76,7 @@ build:backend  # Build backend only
 rebuild       # Rebuild all
 rebuild:frontend
 rebuild:backend
+rebuild:docker   # Rebuild Docker containers (clean)
 ```
 
 ### Utility Commands
@@ -259,6 +260,14 @@ rebuild() {
     build
 }
 
+rebuild:docker() {
+    log_info "Rebuilding Docker containers from scratch..."
+    down
+    docker-compose -f infra/local/docker-compose.yml build --no-cache
+    up
+    log_info "Docker containers rebuilt successfully!"
+}
+
 # Cleanup commands
 clean() {
     log_info "Cleaning build artifacts..."
@@ -359,7 +368,7 @@ commands() {
 export -f up down restart ps logs dev test test:frontend test:backend
 export -f test:e2e lint format type-check emulators emulators:export
 export -f emulators:import deploy:staging deploy:prod build build:frontend
-export -f build:backend rebuild clean clean:docker nuke db:seed db:reset
+export -f build:backend rebuild rebuild:docker clean clean:docker nuke db:seed db:reset
 export -f monitor analyze lighthouse commands log_info log_warn log_error
 ```
 
@@ -503,6 +512,39 @@ up
 4. **Use `logs`** to debug issues
 5. **Run tests** before committing
 6. **Use confirmation prompts** for safety
+
+## Git Hooks Enhancements (PU-8)
+
+### Multi-line Commit Message Support
+
+The git hooks have been enhanced to properly handle multi-line commit messages:
+
+```bash
+# .git/hooks/commit-msg improvements:
+- Properly validates only the first line of multi-line commits
+- Preserves commit message body and footers
+- Supports conventional commit format with detailed descriptions
+
+# Example multi-line commit:
+feat(auth): implement Firebase authentication middleware
+
+- Add authentication middleware with token verification
+- Implement RBAC with custom claims
+- Add comprehensive security headers
+- Create rate limiting with token bucket algorithm
+
+🤖 Generated with Claude Code
+
+Co-Authored-By: Claude <noreply@anthropic.com>
+```
+
+### Pre-push Hook Optimizations
+
+The pre-push hook now includes:
+- Better error messaging for failures
+- Parallel execution of validation tasks where possible
+- Skip unnecessary checks when no relevant files changed
+- Improved performance for large commits
 
 ## Future Enhancements
 
