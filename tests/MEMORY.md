@@ -8,19 +8,13 @@ Project Uriel uses a comprehensive testing strategy with multiple layers of test
 
 ## Test Structure
 
+**Note**: While this centralized test structure is documented, the project currently uses a distributed testing approach where tests live alongside the code they test (e.g., `__tests__` directories within service folders). This provides better locality and makes it easier to maintain tests with their corresponding code.
+
 ```
-tests/
+tests/                     # Centralized test documentation and utilities
 ├── MEMORY.md              # This file - testing guidance
 ├── README.md              # Test documentation
-├── unit/                  # Unit tests (fast, isolated)
-│   ├── frontend/          # React component tests
-│   └── backend/           # Cloud Functions tests
-├── integration/           # Integration tests
-│   ├── api/              # API endpoint tests
-│   └── firebase/         # Firebase rules tests
-├── e2e/                  # End-to-end tests
-│   └── playwright/       # Playwright test suites
-├── deployment/           # Deployment verification
+├── deployment/           # Deployment verification scripts
 │   ├── test-deploy-scripts.sh  # Script validation
 │   ├── staging/          # Staging verification
 │   │   └── verify.sh
@@ -28,6 +22,22 @@ tests/
 │       └── smoke-test.sh
 └── scripts/              # Test utilities
     └── run-all.sh        # Master test runner
+
+# Actual test locations (distributed approach):
+services/
+├── backend/
+│   └── functions/
+│       └── __tests__/    # Backend unit tests
+│           ├── middleware/
+│           ├── utils/
+│           └── api/
+└── frontend/
+    └── webapp/
+        └── src/
+            └── __tests__/  # Frontend unit tests
+                ├── components/
+                ├── hooks/
+                └── utils/
 ```
 
 ## Testing Commands (Always Use These!)
@@ -451,6 +461,78 @@ Planned testing improvements:
 - Chaos engineering
 - Mobile testing automation
 
+## Testing Patterns from PU-8 Implementation
+
+### Distributed Test Structure Benefits
+
+The project uses a distributed testing approach where tests live alongside their source code:
+
+```
+services/backend/functions/
+├── src/
+│   ├── middleware/
+│   │   ├── auth.ts
+│   │   └── __tests__/
+│   │       └── auth.test.ts
+│   └── utils/
+│       ├── validation.ts
+│       └── __tests__/
+│           └── validation.test.ts
+```
+
+**Benefits:**
+- Tests are easier to find and maintain
+- Refactoring is simpler when tests move with code
+- Clear ownership and locality of tests
+- Better IDE integration and navigation
+
+### Firebase Admin SDK Testing Patterns
+
+When testing Firebase Admin SDK functionality:
+
+```typescript
+// Mock Firebase Admin at the module level
+jest.mock('firebase-admin', () => ({
+  initializeApp: jest.fn(),
+  auth: jest.fn(() => ({
+    verifyIdToken: jest.fn(),
+    setCustomUserClaims: jest.fn()
+  })),
+  firestore: jest.fn(() => ({
+    collection: jest.fn()
+  }))
+}));
+
+// Import after mocking
+import * as admin from 'firebase-admin';
+```
+
+### Express Middleware Testing
+
+Comprehensive pattern for testing Express middleware:
+
+```typescript
+describe('Middleware', () => {
+  let mockReq: Partial<Request>;
+  let mockRes: Partial<Response>;
+  let mockNext: NextFunction;
+
+  beforeEach(() => {
+    mockReq = { headers: {} };
+    mockRes = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+      setHeader: jest.fn()
+    };
+    mockNext = jest.fn();
+  });
+
+  // Test successful path
+  // Test error conditions
+  // Test edge cases
+});
+```
+
 ## Important Reminders
 
 1. **Always run tests before pushing** - Use git hooks
@@ -459,5 +541,7 @@ Planned testing improvements:
 4. **Monitor production after deployment** - Use `test:production`
 5. **Keep tests fast and reliable** - Optimize regularly
 6. **Document complex test scenarios** - Update this MEMORY.md
+7. **Use distributed test structure** - Keep tests with their source code
+8. **Mock Firebase Admin properly** - Mock at module level before imports
 
 Remember: Good tests are our safety net for confident deployments! 🛡️

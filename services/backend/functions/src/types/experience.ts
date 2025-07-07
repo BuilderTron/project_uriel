@@ -4,7 +4,7 @@
  * Defines work history, education, skills, and career timeline.
  */
 
-import { BaseDocument, TimestampFields } from './index';
+import { BaseDocument, TimestampFields } from "./index";
 
 /**
  * Professional experience entry
@@ -69,24 +69,24 @@ export interface Experience extends BaseDocument {
  * Experience types
  */
 export type ExperienceType = 
-  | 'work'
-  | 'education'
-  | 'certification'
-  | 'volunteer'
-  | 'freelance'
-  | 'internship'
-  | 'contract';
+  | "work"
+  | "education"
+  | "certification"
+  | "volunteer"
+  | "freelance"
+  | "internship"
+  | "contract";
 
 /**
  * Employment types
  */
 export type EmploymentType = 
-  | 'full-time'
-  | 'part-time'
-  | 'contract'
-  | 'freelance'
-  | 'internship'
-  | 'volunteer';
+  | "full-time"
+  | "part-time"
+  | "contract"
+  | "freelance"
+  | "internship"
+  | "volunteer";
 
 /**
  * Notable achievement
@@ -223,15 +223,15 @@ export interface Skill extends BaseDocument {
  * Skill categories
  */
 export type SkillCategory = 
-  | 'programming-languages'
-  | 'frameworks-libraries'
-  | 'databases'
-  | 'tools-platforms'
-  | 'cloud-services'
-  | 'methodologies'
-  | 'soft-skills'
-  | 'languages'
-  | 'other';
+  | "programming-languages"
+  | "frameworks-libraries"
+  | "databases"
+  | "tools-platforms"
+  | "cloud-services"
+  | "methodologies"
+  | "soft-skills"
+  | "languages"
+  | "other";
 
 /**
  * Skill certification
@@ -369,7 +369,7 @@ export interface ResumeSection {
   content: string;
   
   /** Section type */
-  type: 'text' | 'list' | 'timeline';
+  type: "text" | "list" | "timeline";
   
   /** Display order */
   order: number;
@@ -383,13 +383,13 @@ export interface ResumeSection {
  */
 export interface ResumeStyle {
   /** Color scheme */
-  colorScheme: 'blue' | 'green' | 'purple' | 'red' | 'gray';
+  colorScheme: "blue" | "green" | "purple" | "red" | "gray";
   
   /** Font family */
-  fontFamily: 'serif' | 'sans-serif' | 'monospace';
+  fontFamily: "serif" | "sans-serif" | "monospace";
   
   /** Layout style */
-  layout: 'single-column' | 'two-column' | 'modern';
+  layout: "single-column" | "two-column" | "modern";
   
   /** Whether to show photos */
   showPhoto: boolean;
@@ -464,16 +464,16 @@ export interface ExperienceFilters {
  * Experience sort options
  */
 export type ExperienceSortBy = 
-  | 'startDate'
-  | 'endDate'
-  | 'order'
-  | 'company'
-  | 'title';
+  | "startDate"
+  | "endDate"
+  | "order"
+  | "company"
+  | "title";
 
 export interface ExperienceQueryOptions {
   filters?: ExperienceFilters;
   sortBy?: ExperienceSortBy;
-  sortDirection?: 'asc' | 'desc';
+  sortDirection?: "asc" | "desc";
   limit?: number;
   visible?: boolean;
 }

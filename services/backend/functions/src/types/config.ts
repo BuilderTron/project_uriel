@@ -4,7 +4,7 @@
  * Defines global site settings, feature flags, and configuration management.
  */
 
-import { TimestampFields } from './index';
+import { TimestampFields } from "./index";
 
 /**
  * Site configuration data
@@ -45,40 +45,40 @@ export interface SiteConfig extends TimestampFields {
  * Configuration sections
  */
 export type ConfigSection = 
-  | 'site'
-  | 'features'
-  | 'api'
-  | 'social'
-  | 'contact'
-  | 'analytics'
-  | 'security'
-  | 'email'
-  | 'storage'
-  | 'seo'
-  | 'performance'
-  | 'maintenance';
+  | "site"
+  | "features"
+  | "api"
+  | "social"
+  | "contact"
+  | "analytics"
+  | "security"
+  | "email"
+  | "storage"
+  | "seo"
+  | "performance"
+  | "maintenance";
 
 /**
  * Configuration value types
  */
 export type ConfigValueType = 
-  | 'string'
-  | 'number'
-  | 'boolean'
-  | 'array'
-  | 'object'
-  | 'url'
-  | 'email'
-  | 'json';
+  | "string"
+  | "number"
+  | "boolean"
+  | "array"
+  | "object"
+  | "url"
+  | "email"
+  | "json";
 
 /**
  * Configuration environments
  */
 export type ConfigEnvironment = 
-  | 'development'
-  | 'staging'
-  | 'production'
-  | 'all';
+  | "development"
+  | "staging"
+  | "production"
+  | "all";
 
 /**
  * Site settings configuration
@@ -270,7 +270,7 @@ export interface SocialConfig {
     siteName: string;
     
     /** Twitter card type */
-    twitterCardType: 'summary' | 'summary_large_image';
+    twitterCardType: "summary" | "summary_large_image";
   };
 }
 
@@ -365,7 +365,7 @@ export interface SEOConfig {
     autoGenerate: boolean;
     
     /** Update frequency */
-    updateFrequency: 'daily' | 'weekly' | 'monthly';
+    updateFrequency: "daily" | "weekly" | "monthly";
     
     /** Priority values */
     priorities: {
@@ -415,7 +415,7 @@ export interface PerformanceConfig {
     lazyLoadingEnabled: boolean;
     
     /** Placeholder strategy */
-    placeholderStrategy: 'blur' | 'solid' | 'svg';
+    placeholderStrategy: "blur" | "solid" | "svg";
     
     /** Quality settings */
     quality: {
@@ -575,7 +575,7 @@ export interface ConfigValidationWarning {
   message: string;
   
   /** Warning level */
-  level: 'low' | 'medium' | 'high';
+  level: "low" | "medium" | "high";
   
   /** Recommended action */
   recommendation?: string;

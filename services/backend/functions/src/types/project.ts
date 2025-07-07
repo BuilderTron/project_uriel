@@ -4,7 +4,7 @@
  * Defines project showcase data, technologies, and metadata.
  */
 
-import { BaseDocument, DocumentStatus } from './index';
+import { BaseDocument, DocumentStatus } from "./index";
 
 /**
  * Portfolio project data
@@ -69,14 +69,14 @@ export interface Project extends BaseDocument {
  * Project categories
  */
 export type ProjectCategory = 
-  | 'web-development'
-  | 'mobile-app'
-  | 'desktop-app'
-  | 'api-backend'
-  | 'data-science'
-  | 'devops'
-  | 'ui-ux-design'
-  | 'other';
+  | "web-development"
+  | "mobile-app"
+  | "desktop-app"
+  | "api-backend"
+  | "data-science"
+  | "devops"
+  | "ui-ux-design"
+  | "other";
 
 /**
  * Project team member information
@@ -225,13 +225,13 @@ export interface ProjectFilters {
  * Project sort options
  */
 export type ProjectSortBy = 
-  | 'order'
-  | 'createdAt'
-  | 'completedAt'
-  | 'title'
-  | 'views';
+  | "order"
+  | "createdAt"
+  | "completedAt"
+  | "title"
+  | "views";
 
-export type SortDirection = 'asc' | 'desc';
+export type SortDirection = "asc" | "desc";
 
 export interface ProjectQueryOptions {
   filters?: ProjectFilters;

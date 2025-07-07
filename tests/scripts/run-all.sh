@@ -64,16 +64,40 @@ if [ -f "services/backend/firestore/firestore.rules" ]; then
     echo -e "${YELLOW}⚠ Skipped (requires emulator setup)${NC}"
 fi
 
-# 6. Integration Tests
-if [ -d "tests/integration" ]; then
-    echo -e "\n${YELLOW}Integration Tests${NC}"
-    echo -e "${YELLOW}⚠ Not implemented yet${NC}"
+# 6. Unit Tests (centralized)
+if [ -d "tests/unit" ]; then
+    echo -e "\n${YELLOW}Running Unit Tests (Backend Auth)...${NC}"
+    if command -v mocha >/dev/null 2>&1; then
+        run_suite "Unit Tests - Auth Functions" "cd tests/unit/backend && npm test auth-functions.test.ts"
+        run_suite "Unit Tests - Auth Middleware" "cd tests/unit/backend && npm test auth-middleware.test.ts"
+        run_suite "Unit Tests - Auth Triggers" "cd tests/unit/backend && npm test auth-triggers.test.ts"
+    else
+        echo -e "${YELLOW}⚠ Mocha not available, skipping unit tests${NC}"
+    fi
 fi
 
-# 7. E2E Tests
+# 7. Integration Tests
+if [ -d "tests/integration" ]; then
+    echo -e "\n${YELLOW}Running Integration Tests...${NC}"
+    if command -v mocha >/dev/null 2>&1; then
+        run_suite "Integration Tests - Login Flow" "cd tests/integration/auth && npm test login-flow.test.ts"
+        run_suite "Integration Tests - Role Management" "cd tests/integration/auth && npm test role-management.test.ts"
+        run_suite "Integration Tests - Security Rules" "cd tests/integration/auth && npm test security-rules.test.ts"
+    else
+        echo -e "${YELLOW}⚠ Mocha not available, skipping integration tests${NC}"
+    fi
+fi
+
+# 8. E2E Tests
 if [ -d "tests/e2e" ]; then
-    echo -e "\n${YELLOW}E2E Tests${NC}"
-    echo -e "${YELLOW}⚠ Not implemented yet${NC}"
+    echo -e "\n${YELLOW}Running E2E Tests...${NC}"
+    if command -v playwright >/dev/null 2>&1; then
+        run_suite "E2E Tests - User Registration" "cd tests/e2e/auth && npx playwright test user-registration.spec.ts"
+        run_suite "E2E Tests - Admin Login" "cd tests/e2e/auth && npx playwright test admin-login.spec.ts"
+        run_suite "E2E Tests - Protected Routes" "cd tests/e2e/auth && npx playwright test protected-routes.spec.ts"
+    else
+        echo -e "${YELLOW}⚠ Playwright not available, skipping E2E tests${NC}"
+    fi
 fi
 
 # Summary

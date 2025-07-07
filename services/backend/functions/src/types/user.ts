@@ -4,7 +4,7 @@
  * Defines user profiles, authentication data, and role-based access control.
  */
 
-import { BaseDocument, UserRole, TimestampFields } from './index';
+import { BaseDocument, UserRole, TimestampFields } from "./index";
 
 /**
  * Core user profile data stored in Firestore
@@ -43,7 +43,7 @@ export interface User extends BaseDocument {
  */
 export interface UserPreferences {
   /** Preferred theme (light/dark) */
-  theme?: 'light' | 'dark';
+  theme?: "light" | "dark";
   
   /** Email notification preferences */
   notifications?: NotificationPreferences;

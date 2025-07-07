@@ -146,9 +146,9 @@ export const getAnalyticsSummary = functions.https.onCall(
       // Get daily stats for the specified period
       const dailyStatsQuery = db.collection("analytics")
         .where(admin.firestore.FieldPath.documentId(), ">=", 
-               `daily-${startDate.toISOString().split("T")[0]}`)
+          `daily-${startDate.toISOString().split("T")[0]}`)
         .where(admin.firestore.FieldPath.documentId(), "<=", 
-               `daily-${endDate.toISOString().split("T")[0]}`)
+          `daily-${endDate.toISOString().split("T")[0]}`)
         .orderBy(admin.firestore.FieldPath.documentId(), "desc");
 
       const dailyStatsSnapshot = await dailyStatsQuery.get();
