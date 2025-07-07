@@ -4,7 +4,7 @@
  * Defines analytics tracking, events, and reporting.
  */
 
-import { TimestampFields } from './index';
+import { TimestampFields } from "./index";
 
 /**
  * Analytics event data
@@ -63,20 +63,20 @@ export interface AnalyticsEvent extends TimestampFields {
  * Analytics event types
  */
 export type AnalyticsEventType = 
-  | 'page_view'
-  | 'click'
-  | 'form_submit'
-  | 'download'
-  | 'external_link'
-  | 'search'
-  | 'video_play'
-  | 'video_pause'
-  | 'scroll'
-  | 'time_on_page'
-  | 'bounce'
-  | 'conversion'
-  | 'error'
-  | 'custom';
+  | "page_view"
+  | "click"
+  | "form_submit"
+  | "download"
+  | "external_link"
+  | "search"
+  | "video_play"
+  | "video_pause"
+  | "scroll"
+  | "time_on_page"
+  | "bounce"
+  | "conversion"
+  | "error"
+  | "custom";
 
 /**
  * Geographic location data
@@ -115,7 +115,7 @@ export interface GeoLocation {
  */
 export interface DeviceInfo {
   /** Device type */
-  type: 'desktop' | 'mobile' | 'tablet' | 'unknown';
+  type: "desktop" | "mobile" | "tablet" | "unknown";
   
   /** Operating system */
   os?: string;
@@ -463,7 +463,7 @@ export interface CustomEventConfig {
   trigger: string;
   
   /** Trigger type */
-  triggerType: 'click' | 'submit' | 'pageview' | 'scroll' | 'time';
+  triggerType: "click" | "submit" | "pageview" | "scroll" | "time";
   
   /** Whether event is enabled */
   enabled: boolean;
@@ -477,7 +477,7 @@ export interface CustomEventConfig {
  */
 export interface AnalyticsReportRequest {
   /** Report type */
-  type: 'overview' | 'pages' | 'referrers' | 'devices' | 'geo' | 'realtime';
+  type: "overview" | "pages" | "referrers" | "devices" | "geo" | "realtime";
   
   /** Date range */
   dateRange: {
@@ -494,10 +494,10 @@ export interface AnalyticsReportRequest {
   };
   
   /** Grouping options */
-  groupBy?: 'hour' | 'day' | 'week' | 'month';
+  groupBy?: "hour" | "day" | "week" | "month";
   
   /** Metrics to include */
-  metrics?: Array<'views' | 'visitors' | 'sessions' | 'bounceRate' | 'avgTime'>;
+  metrics?: Array<"views" | "visitors" | "sessions" | "bounceRate" | "avgTime">;
 }
 
 /**

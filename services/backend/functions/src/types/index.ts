@@ -6,13 +6,13 @@
  */
 
 // Base interfaces
-export * from './user';
-export * from './project';
-export * from './blog';
-export * from './contact';
-export * from './experience';
-export * from './analytics';
-export * from './config';
+export * from "./user";
+export * from "./project";
+export * from "./blog";
+export * from "./contact";
+export * from "./experience";
+export * from "./analytics";
+export * from "./config";
 
 // Common types used across multiple models
 export interface BaseDocument {
@@ -26,6 +26,6 @@ export interface TimestampFields {
   updatedAt?: FirebaseFirestore.Timestamp;
 }
 
-export type DocumentStatus = 'draft' | 'published' | 'archived';
-export type UserRole = 'admin' | 'user';
-export type Priority = 'low' | 'medium' | 'high' | 'urgent';
+export type DocumentStatus = "draft" | "published" | "archived";
+export type UserRole = "admin" | "user";
+export type Priority = "low" | "medium" | "high" | "urgent";

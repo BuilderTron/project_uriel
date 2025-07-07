@@ -1,0 +1,45 @@
+{
+  "name": "project-uriel-tests",
+  "version": "1.0.0",
+  "description": "Centralized test suite for Project Uriel",
+  "scripts": {
+    "test": "npm run test:unit && npm run test:integration && npm run test:e2e",
+    "test:unit": "mocha 'unit/**/*.test.ts' --require ts-node/register --timeout 10000",
+    "test:integration": "mocha 'integration/**/*.test.ts' --require ts-node/register --timeout 30000",
+    "test:e2e": "playwright test",
+    "test:auth": "npm run test:auth:unit && npm run test:auth:integration && npm run test:auth:e2e",
+    "test:auth:unit": "mocha 'unit/backend/auth-*.test.ts' --require ts-node/register --timeout 10000",
+    "test:auth:integration": "mocha 'integration/auth/*.test.ts' --require ts-node/register --timeout 30000",
+    "test:auth:e2e": "playwright test e2e/auth/",
+    "install-deps": "npm install && playwright install"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.40.0",
+    "@types/chai": "^4.3.5",
+    "@types/mocha": "^10.0.1",
+    "@types/node": "^20.8.0",
+    "chai": "^4.3.8",
+    "firebase-admin": "^12.0.0",
+    "firebase-functions-test": "^3.1.0",
+    "mocha": "^10.2.0",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.1.6"
+  },
+  "mocha": {
+    "require": ["ts-node/register"],
+    "extensions": ["ts"],
+    "timeout": 10000,
+    "recursive": true,
+    "exit": true,
+    "reporter": "spec",
+    "env": {
+      "NODE_ENV": "test",
+      "FIRESTORE_EMULATOR_HOST": "localhost:8080",
+      "FIREBASE_AUTH_EMULATOR_HOST": "localhost:9099"
+    }
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "private": true
+}

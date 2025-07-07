@@ -4,7 +4,7 @@
  * Defines blog posts, comments, categories, and content management.
  */
 
-import { BaseDocument, DocumentStatus, TimestampFields } from './index';
+import { BaseDocument, DocumentStatus, TimestampFields } from "./index";
 
 /**
  * Blog post data
@@ -228,7 +228,7 @@ export interface CommentAuthor {
 /**
  * Comment status types
  */
-export type CommentStatus = 'pending' | 'approved' | 'rejected' | 'spam';
+export type CommentStatus = "pending" | "approved" | "rejected" | "spam";
 
 /**
  * Blog category data
@@ -328,17 +328,17 @@ export interface BlogPostFilters {
  * Blog post sort options
  */
 export type BlogPostSortBy = 
-  | 'publishedAt'
-  | 'createdAt'
-  | 'views'
-  | 'likes'
-  | 'commentCount'
-  | 'title';
+  | "publishedAt"
+  | "createdAt"
+  | "views"
+  | "likes"
+  | "commentCount"
+  | "title";
 
 export interface BlogPostQueryOptions {
   filters?: BlogPostFilters;
   sortBy?: BlogPostSortBy;
-  sortDirection?: 'asc' | 'desc';
+  sortDirection?: "asc" | "desc";
   limit?: number;
   offset?: number;
 }

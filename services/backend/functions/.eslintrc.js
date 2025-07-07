@@ -6,8 +6,6 @@ module.exports = {
   },
   extends: [
     "eslint:recommended",
-    "@typescript-eslint/recommended",
-    "google",
   ],
   parser: "@typescript-eslint/parser",
   parserOptions: {

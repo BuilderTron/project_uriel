@@ -4,7 +4,7 @@
  * Defines contact form submissions, validation, and management.
  */
 
-import { BaseDocument, Priority, TimestampFields } from './index';
+import { BaseDocument, Priority, TimestampFields } from "./index";
 
 /**
  * Contact message data
@@ -75,13 +75,13 @@ export interface ContactMessage extends BaseDocument {
  * Contact message status types
  */
 export type ContactMessageStatus = 
-  | 'new'
-  | 'read'
-  | 'in-progress'
-  | 'responded'
-  | 'closed'
-  | 'spam'
-  | 'archived';
+  | "new"
+  | "read"
+  | "in-progress"
+  | "responded"
+  | "closed"
+  | "spam"
+  | "archived";
 
 /**
  * Contact form attachment
@@ -183,17 +183,17 @@ export interface ContactMessageFilters {
  * Contact message sort options
  */
 export type ContactMessageSortBy = 
-  | 'createdAt'
-  | 'priority'
-  | 'status'
-  | 'name'
-  | 'subject'
-  | 'respondedAt';
+  | "createdAt"
+  | "priority"
+  | "status"
+  | "name"
+  | "subject"
+  | "respondedAt";
 
 export interface ContactMessageQueryOptions {
   filters?: ContactMessageFilters;
   sortBy?: ContactMessageSortBy;
-  sortDirection?: 'asc' | 'desc';
+  sortDirection?: "asc" | "desc";
   limit?: number;
   offset?: number;
 }
@@ -296,7 +296,7 @@ export interface ContactFormValidation {
   maxMessageLength: number;
   
   /** Required fields */
-  requiredFields: Array<'name' | 'email' | 'subject' | 'message'>;
+  requiredFields: Array<"name" | "email" | "subject" | "message">;
   
   /** Email domain blocklist */
   blockedDomains: string[];
