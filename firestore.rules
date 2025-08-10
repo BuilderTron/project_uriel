@@ -6,7 +6,7 @@ service cloud.firestore {
     function isAdmin() {
       return request.auth != null 
         && request.auth.token.email_verified == true
-        && request.auth.token.email.matches('.*@josejlopez\\.com$');
+        && request.auth.token.email.matches('.*@josejulianlopez\\.com$');
     }
     
     // Helper function to check if user exists in admins collection
