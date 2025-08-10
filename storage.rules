@@ -1,0 +1,32 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    
+    // Helper function to check if user is admin with domain restriction
+    function isAdmin() {
+      return request.auth != null 
+        && request.auth.token.email_verified == true
+        && request.auth.token.email.matches('.*@josejlopez\\.com$');
+    }
+    
+    // Projects folder - public read, admin write
+    match /projects/{fileName} {
+      allow read: if true;
+      allow write: if isAdmin() && 
+        (fileName.matches('.*\\.(jpg|jpeg|png|gif|webp)$') || 
+         fileName.matches('.*\\.(pdf)$'));
+    }
+    
+    // Resumes folder - public read, admin write
+    match /resumes/{fileName} {
+      allow read: if true;
+      allow write: if isAdmin() && fileName.matches('.*\\.pdf$');
+    }
+    
+    // General uploads - admin only
+    match /uploads/{fileName} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+  }
+}

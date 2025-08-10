@@ -1,0 +1,6 @@
+project_name: portfolio-website-firebase
+language: typescript
+description: Firebase-powered portfolio website with React frontend and comprehensive admin dashboard
+framework: firebase
+backend: firebase-functions
+database: firestore
