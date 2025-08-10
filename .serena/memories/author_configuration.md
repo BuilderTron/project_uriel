@@ -125,6 +125,52 @@ Co-authored-by: Claude <noreply@anthropic.com>
 Authored-by: Jose J Lopez <JL@josejlopez.com>
 ```
 
+## GitHub CLI Integration
+
+### Using gh CLI for Commits and PRs
+Always use gh CLI for GitHub operations with proper attribution:
+
+```bash
+# Commit with proper attribution
+git add .
+git commit -m "feat: implement Firebase backend infrastructure
+
+- Add Firebase project connection and configuration
+- Implement Cloud Functions with sendContactEmail and healthCheck
+- Create Firestore security rules with domain restriction (@josejulianlopez.com)
+- Set up Storage security rules for admin-only uploads
+- Configure TypeScript build for Firebase Functions
+- Add comprehensive Firestore indexes for optimized queries
+
+Co-authored-by: Claude <noreply@anthropic.com>
+Authored-by: Jose J Lopez <JL@josejlopez.com>"
+
+# Push to GitHub
+git push origin main
+
+# Create PR using gh CLI
+gh pr create --title "feat: implement Firebase backend infrastructure" --body "## Summary
+- Complete Firebase backend foundation with authentication, database, and functions
+- Domain-restricted admin access (@josejulianlopez.com)
+- Production-ready security rules and indexes
+- Local development environment with emulators
+
+## Technical Implementation
+- Firebase Authentication with Google Sign-in
+- Firestore with optimized security rules and indexes
+- Cloud Functions for contact form and health monitoring
+- Storage with proper access controls
+- TypeScript configuration and build process
+
+## Testing
+- Tested with Firebase emulators
+- Security rules validated for authorized/unauthorized access
+- Functions tested locally with health check endpoint
+
+**Author**: Jose J Lopez (JL@josejlopez.com)
+**Implementation**: Firebase best practices with Claude assistance"
+```
+
 ### Package.json Author Field
 ```json
 {

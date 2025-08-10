@@ -103,6 +103,32 @@ The project uses TypeScript throughout with Node.js 18 runtime for functions. Ma
 
 All commits should be attributed to Jose J Lopez <JL@josejlopez.com>. Use conventional commit format with proper co-authoring when Claude assists with implementation.
 
+### Commit Format Example
+```bash
+git commit -m "feat: implement Firebase authentication system
+
+- Add Google Sign-in with domain restriction (@josejulianlopez.com)
+- Create admin verification system in security rules
+- Implement TypeScript interfaces for auth state
+- Configure Firebase emulators for local testing
+
+Co-authored-by: Claude <noreply@anthropic.com>
+Authored-by: Jose J Lopez <JL@josejlopez.com>"
+```
+
+### GitHub CLI Usage
+Use gh CLI for all GitHub operations:
+```bash
+# Create issues
+gh issue create --title "Implement contact form backend"
+
+# Create PRs with detailed descriptions
+gh pr create --title "feat: Firebase backend implementation"
+
+# Merge PRs
+gh pr merge --squash
+```
+
 ## MCP Integration
 
 This project includes Firebase MCP tools for Claude Code integration. Use Firebase MCP functions for database operations, authentication management, and rule validation during development.
